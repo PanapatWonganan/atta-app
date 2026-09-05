@@ -29,6 +29,7 @@ import com.atta.app.data.Plans
 import com.atta.app.ui.screens.FocusScreen
 import com.atta.app.ui.screens.HomeScreen
 import com.atta.app.ui.screens.PaywallScreen
+import com.atta.app.ui.screens.PracticeScreen
 import com.atta.app.ui.screens.ProcessingScreen
 import com.atta.app.ui.screens.QuestionsScreen
 import com.atta.app.ui.screens.ResultScreen
@@ -131,6 +132,15 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         }
         composable("home") {
             HomeScreen(prefs, settings) { route -> nav.navigate(route) }
+        }
+        composable("practice/{index}") { entry ->
+            PracticeScreen(
+                prefs = prefs,
+                settings = settings,
+                startIndex = entry.arguments?.getString("index")?.toIntOrNull() ?: 0,
+                onClose = { nav.popBackStack() },
+                onRequireUpgrade = { nav.navigate("paywall/upgrade") },
+            )
         }
         composable("gallery") {
             WidgetGalleryScreen(prefs, settings) { nav.navigate("paywall/upgrade") }

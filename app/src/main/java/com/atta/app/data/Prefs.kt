@@ -43,6 +43,8 @@ data class AttaSettings(
     val plan: String = Plans.None,
     val appearance: String = "system", // system | light | dark
     val language: String = "en", // en | th
+    val practiceMood: String = "calm", // none | calm | rain | waves
+    val practicePace: String = "slow", // slow | normal
 )
 
 private object Keys {
@@ -56,6 +58,8 @@ private object Keys {
     val Plan = stringPreferencesKey("plan")
     val Appearance = stringPreferencesKey("appearance")
     val Language = stringPreferencesKey("language")
+    val PracticeMood = stringPreferencesKey("practice_mood")
+    val PracticePace = stringPreferencesKey("practice_pace")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -69,6 +73,8 @@ private fun Preferences.toSettings() = AttaSettings(
     plan = this[Keys.Plan] ?: Plans.None,
     appearance = this[Keys.Appearance] ?: "system",
     language = this[Keys.Language] ?: "en",
+    practiceMood = this[Keys.PracticeMood] ?: "calm",
+    practicePace = this[Keys.PracticePace] ?: "slow",
 )
 
 class AttaPrefs(private val context: Context) {
@@ -107,4 +113,10 @@ class AttaPrefs(private val context: Context) {
 
     suspend fun setLanguage(value: String) =
         context.attaDataStore.edit { it[Keys.Language] = value }
+
+    suspend fun setPracticeMood(value: String) =
+        context.attaDataStore.edit { it[Keys.PracticeMood] = value }
+
+    suspend fun setPracticePace(value: String) =
+        context.attaDataStore.edit { it[Keys.PracticePace] = value }
 }

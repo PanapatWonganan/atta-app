@@ -65,6 +65,7 @@ import com.atta.app.ui.components.BookmarkIcon
 import com.atta.app.ui.components.ChevronDownIcon
 import com.atta.app.ui.components.ChevronUpIcon
 import com.atta.app.ui.components.DotsIcon
+import com.atta.app.ui.components.PlayIcon
 import com.atta.app.ui.components.ShareIcon
 import com.atta.app.ui.components.ThemeDot
 import com.atta.app.ui.theme.Atta
@@ -137,6 +138,7 @@ fun HomeScreen(
             onOpenThemes = { showThemes = true },
             onOpenMenu = { showMenu = true },
             showChevron = page < feed.lastIndex,
+            onOpenPractice = { onOpen("practice/$page") },
         )
     }
 
@@ -190,6 +192,7 @@ fun HomeCard(
     onOpenMenu: (() -> Unit)?,
     showChevron: Boolean,
     onClose: (() -> Unit)? = null,
+    onOpenPractice: (() -> Unit)? = null,
 ) {
     val transition = rememberInfiniteTransition(label = "drift")
     val drift by transition.animateFloat(
@@ -284,6 +287,27 @@ fun HomeCard(
                     .background(if (saved) AttaPalette.Champagne else theme.ink.copy(alpha = 0.3f)),
             )
             Spacer(Modifier.weight(1.2f))
+            if (onOpenPractice != null) {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(44.dp)
+                        .clip(RoundedCornerShape(22.dp))
+                        .border(1.dp, theme.ink.copy(alpha = 0.22f), RoundedCornerShape(22.dp))
+                        .clickable(onClick = onOpenPractice)
+                        .padding(horizontal = 22.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    PlayIcon(color = theme.ink.copy(alpha = 0.8f), modifier = Modifier.size(11.dp))
+                    Text(
+                        text = "Practice",
+                        style = AttaType.label.copy(fontSize = 11.sp, letterSpacing = 0.3.sp),
+                        color = theme.ink.copy(alpha = 0.8f),
+                    )
+                }
+                Spacer(Modifier.height(20.dp))
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

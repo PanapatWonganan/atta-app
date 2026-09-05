@@ -110,6 +110,37 @@ fun ChevronDownIcon(color: Color, modifier: Modifier) {
 }
 
 @Composable
+fun PlayIcon(color: Color, modifier: Modifier) {
+    Canvas(modifier) {
+        val s = size.minDimension / 16f
+        drawPath(
+            Path().apply {
+                moveTo(5.8f * s, 3.6f * s)
+                lineTo(12.4f * s, 8f * s)
+                lineTo(5.8f * s, 12.4f * s)
+                close()
+            },
+            color, style = Fill,
+        )
+    }
+}
+
+@Composable
+fun PauseIcon(color: Color, modifier: Modifier) {
+    Canvas(modifier) {
+        val s = size.minDimension / 16f
+        drawLine(
+            color, Offset(6f * s, 3.8f * s), Offset(6f * s, 12.2f * s),
+            strokeWidth = 1.7f * s, cap = StrokeCap.Round,
+        )
+        drawLine(
+            color, Offset(10f * s, 3.8f * s), Offset(10f * s, 12.2f * s),
+            strokeWidth = 1.7f * s, cap = StrokeCap.Round,
+        )
+    }
+}
+
+@Composable
 fun CheckIcon(color: Color, modifier: Modifier) {
     Canvas(modifier) {
         val s = size.minDimension / 8f
