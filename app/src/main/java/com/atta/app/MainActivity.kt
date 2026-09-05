@@ -26,6 +26,7 @@ import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.Plans
+import com.atta.app.ui.screens.AboutScreen
 import com.atta.app.ui.screens.FocusScreen
 import com.atta.app.ui.screens.HomeScreen
 import com.atta.app.ui.screens.PaywallScreen
@@ -38,10 +39,12 @@ import com.atta.app.ui.screens.SettingsScreen
 import com.atta.app.ui.screens.ViewerScreen
 import com.atta.app.ui.screens.WelcomeScreen
 import com.atta.app.ui.screens.WidgetGalleryScreen
+import com.atta.app.ui.screens.WidgetMomentScreen
 import com.atta.app.ui.theme.AttaMotion
 import com.atta.app.ui.theme.AttaPalette
 import com.atta.app.ui.theme.AttaTheme
 import com.atta.app.widget.AttaWidgetUpdater
+import com.atta.app.widget.OpenLineExtra
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -83,6 +86,16 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    // Widget and daily-notification taps land on that line, not just the app.
+    LaunchedEffect(Unit) {
+        val activity = context as? ComponentActivity ?: return@LaunchedEffect
+        val lineId = activity.intent?.getStringExtra(OpenLineExtra)
+        if (lineId != null && settings.onboardingDone) {
+            activity.intent.removeExtra(OpenLineExtra)
+            nav.navigate("line/$lineId")
+        }
+    }
+
     NavHost(
         navController = nav,
         startDestination = if (settings.onboardingDone) "home" else "welcome",
@@ -120,7 +133,7 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                     runCatching { AttaWidgetUpdater.updateAll(context) }
                 }
                 if (fromOnboarding) {
-                    nav.navigate("home") { popUpTo(0) { inclusive = true } }
+                    nav.navigate("widgetmoment") { popUpTo(0) { inclusive = true } }
                 } else {
                     nav.popBackStack()
                 }
@@ -129,6 +142,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                 onNotNow = { close(if (Plans.isFree(settings.plan)) Plans.Free else null) },
                 onSubscribe = { close(it) },
             )
+        }
+        composable("widgetmoment") {
+            WidgetMomentScreen(settings = settings) {
+                nav.navigate("home") { popUpTo(0) { inclusive = true } }
+            }
         }
         composable("home") {
             HomeScreen(prefs, settings) { route -> nav.navigate(route) }
@@ -164,7 +182,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                 settings = settings,
                 onOpenFocus = { nav.navigate("focus") },
                 onOpenPaywall = { nav.navigate("paywall/upgrade") },
+                onOpenAbout = { nav.navigate("about") },
             )
+        }
+        composable("about") {
+            AboutScreen()
         }
         composable("line/{id}") { entry ->
             val affirmation = Affirmations.byId(entry.arguments?.getString("id"))

@@ -157,7 +157,9 @@ fun PracticeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = mood.displayName,
+                        // The free tier hears silence — say what's behind the chip
+                        // instead of a dead-looking "None".
+                        text = if (freeTier) "Sound · Plus" else mood.displayName,
                         style = AttaType.label.copy(fontSize = 11.sp, letterSpacing = 0.3.sp),
                         color = theme.ink.copy(alpha = 0.75f),
                     )

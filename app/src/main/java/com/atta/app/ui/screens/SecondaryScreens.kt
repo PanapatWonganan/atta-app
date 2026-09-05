@@ -555,6 +555,7 @@ fun SettingsScreen(
     settings: AttaSettings,
     onOpenFocus: () -> Unit,
     onOpenPaywall: () -> Unit,
+    onOpenAbout: () -> Unit,
 ) {
     val colors = Atta.colors
     val context = LocalContext.current
@@ -647,6 +648,11 @@ fun SettingsScreen(
                 ValueText(if (settings.language == "th") "ไทย" else "English")
             }
 
+            if (settings.moodLog.isNotEmpty()) {
+                SectionLabel("Check-ins")
+                CheckInHistory(moodLog = settings.moodLog)
+            }
+
             SectionLabel("Account")
             SettingsRow(label = "Subscription", onClick = onOpenPaywall, divider = false) {
                 ValueText(Plans.label(settings.plan))
@@ -660,7 +666,9 @@ fun SettingsScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp),
+                .clip(RoundedCornerShape(AttaDimens.RadiusChip))
+                .clickable(onClick = onOpenAbout)
+                .padding(bottom = 12.dp, top = 8.dp),
         )
     }
 
@@ -708,6 +716,41 @@ fun SettingsScreen(
                 }
             },
         )
+    }
+}
+
+/** Eight quiet weeks of one-tap check-ins. Dots, not numbers. */
+@Composable
+private fun CheckInHistory(moodLog: Set<String>) {
+    val colors = Atta.colors
+    val today = remember { LocalDate.now() }
+    Column(
+        modifier = Modifier.padding(vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(9.dp),
+    ) {
+        (3 downTo 0).forEach { row ->
+            Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                (13 downTo 0).forEach { col ->
+                    val back = row * 14 + col
+                    val date = today.minusDays(back.toLong()).toString()
+                    val value = moodLog.firstOrNull { it.substringBefore('|') == date }
+                        ?.substringAfter('|')
+                    Box(
+                        Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(
+                                when (value) {
+                                    "calm" -> AttaPalette.Champagne
+                                    "okay" -> colors.inkAlpha(0.3f)
+                                    "heavy" -> colors.inkAlpha(0.65f)
+                                    else -> colors.inkAlpha(0.08f)
+                                },
+                            ),
+                    )
+                }
+            }
+        }
     }
 }
 

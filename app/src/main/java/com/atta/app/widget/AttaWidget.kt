@@ -7,6 +7,8 @@ import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalSize
+import androidx.glance.action.ActionParameters
+import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
@@ -28,6 +30,10 @@ import java.time.LocalTime
  * Renders per exact size and re-renders only when the line or theme changes —
  * never on an update tick. One tap target: the whole surface opens today's card.
  */
+/** Intent extra MainActivity reads to open a specific line's card. */
+const val OpenLineExtra = "open_line"
+private val OpenLineParam = ActionParameters.Key<String>(OpenLineExtra)
+
 class AttaWidget : GlanceAppWidget() {
 
     override val sizeMode: SizeMode = SizeMode.Exact
@@ -61,7 +67,11 @@ class AttaWidget : GlanceAppWidget() {
                 contentScale = ContentScale.FillBounds,
                 modifier = GlanceModifier
                     .fillMaxSize()
-                    .clickable(actionStartActivity<MainActivity>()),
+                    .clickable(
+                        actionStartActivity<MainActivity>(
+                            actionParametersOf(OpenLineParam to affirmation.id),
+                        ),
+                    ),
             )
         }
     }

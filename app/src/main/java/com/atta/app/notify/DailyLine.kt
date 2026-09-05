@@ -22,6 +22,7 @@ import com.atta.app.R
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
 import com.atta.app.widget.AttaWidgetUpdater
+import com.atta.app.widget.OpenLineExtra
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -44,7 +45,7 @@ object NotificationHelper {
     }
 
     /** The line itself is the preview — the notification is the product. */
-    fun show(context: Context, title: String, line: String, evening: Boolean) {
+    fun show(context: Context, title: String, line: String, lineId: String, evening: Boolean) {
         if (Build.VERSION.SDK_INT >= 33 &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
@@ -52,9 +53,10 @@ object NotificationHelper {
             return
         }
         val intent = Intent(context, MainActivity::class.java)
+            .putExtra(OpenLineExtra, lineId)
         val contentIntent = PendingIntent.getActivity(
             context,
-            0,
+            if (evening) 1 else 0,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
@@ -84,6 +86,7 @@ class DailyLineWorker(
             context = applicationContext,
             title = if (evening) "Your evening line is ready" else "Your morning line is ready",
             line = line,
+            lineId = affirmation.id,
             evening = evening,
         )
         runCatching { AttaWidgetUpdater.updateAll(applicationContext) }
