@@ -23,10 +23,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,9 +39,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.atta.app.audio.MoodPlayer
 import com.atta.app.audio.Moods
-import com.atta.app.audio.PracticeVoice
+import com.atta.app.audio.PracticeService
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
@@ -57,15 +55,12 @@ import com.atta.app.ui.theme.AttaPalette
 import com.atta.app.ui.theme.AttaType
 import java.time.LocalDate
 import java.time.LocalTime
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-private const val LineGapMs = 4_000L
-private const val SilentLineMs = 9_000L
 
 /**
  * Practice: the feed read aloud, one line at a time with quiet gaps, over an
- * optional mood bed. Audio is screen-scoped — closing the screen stops it.
+ * optional mood bed. The audio lives in [PracticeService], so it keeps going
+ * when this screen closes or the phone locks — this screen is the remote.
  */
 @Composable
 fun PracticeScreen(
@@ -89,38 +84,12 @@ fun PracticeScreen(
     val mood = if (freeTier) Moods.None else Moods.byId(settings.practiceMood)
     val slow = settings.practicePace != "normal"
 
-    var index by remember { mutableIntStateOf(startIndex.coerceIn(0, feed.lastIndex)) }
-    var playing by remember { mutableStateOf(true) }
+    val playback by PracticeService.state.collectAsState()
     var showMoods by remember { mutableStateOf(false) }
-    var voiceState by remember { mutableStateOf(PracticeVoice.State.Loading) }
-    val voice = remember { PracticeVoice(context, settings.language) { voiceState = it } }
-    val moodPlayer = remember { MoodPlayer(context) }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            voice.shutdown()
-            moodPlayer.stop()
-        }
-    }
+    LaunchedEffect(Unit) { PracticeService.start(context, startIndex) }
 
-    LaunchedEffect(playing, mood.id) {
-        if (playing) moodPlayer.play(mood) else moodPlayer.stop()
-    }
-
-    // One line per pass: speak (or hold in silence), rest, then move on. The
-    // index change restarts the effect for the next line; pausing cancels it,
-    // which also stops the engine mid-sentence.
-    LaunchedEffect(playing, index, voiceState, slow) {
-        if (!playing || voiceState == PracticeVoice.State.Loading) return@LaunchedEffect
-        if (voiceState == PracticeVoice.State.Ready) {
-            delay(700)
-            voice.speak(feed[index].second.text(settings.language), slow)
-            delay(LineGapMs)
-        } else {
-            delay(SilentLineMs)
-        }
-        index = (index + 1) % feed.size
-    }
+    val index = playback.index.coerceIn(0, feed.lastIndex)
 
     Box(
         modifier = Modifier
@@ -215,10 +184,10 @@ fun PracticeScreen(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                    ) { playing = !playing },
+                    ) { PracticeService.toggle(context) },
                 contentAlignment = Alignment.Center,
             ) {
-                if (playing) {
+                if (playback.playing) {
                     PauseIcon(color = theme.ink, modifier = Modifier.size(24.dp))
                 } else {
                     PlayIcon(color = theme.ink, modifier = Modifier.size(24.dp))
@@ -228,7 +197,7 @@ fun PracticeScreen(
                 modifier = Modifier.padding(top = 16.dp, bottom = 18.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                if (voiceState == PracticeVoice.State.Unavailable) {
+                if (playback.voiceUnavailable) {
                     Text(
                         text = "Voice unavailable on this device",
                         style = AttaType.caption,

@@ -40,6 +40,18 @@ on the home card. Playback is screen-scoped — leaving the screen stops audio
 - Home: `HomeCard` gains an optional Practice pill (centered above the action
   row); `MainActivity` gains the route.
 
+## Phase 2 (2026-09-06): background playback
+
+`audio/PracticeService.kt` — a foreground service (`mediaPlayback` type) now
+owns the voice, mood bed, and line loop; audio continues when the screen
+closes or the phone locks. A framework `MediaSession` + media-style
+notification provide play/pause/end from the shade and lock screen, with
+audio-focus handling (pause on loss) and stop on task removal. The screen is
+a remote: it mirrors `PracticeService.state` (StateFlow) and sends
+start/toggle intents. Entering Practice from a card jumps the running
+session to that card's line. Paused sessions detach the notification so a
+swipe ends them. No new dependencies — framework media APIs only.
+
 ## Testing
 
 Build, install on the emulator, drive into Practice, screenshot. English TTS
