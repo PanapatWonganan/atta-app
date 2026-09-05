@@ -52,6 +52,21 @@ start/toggle intents. Entering Practice from a card jumps the running
 session to that card's line. Paused sessions detach the notification so a
 swipe ends them. No new dependencies — framework media APIs only.
 
+## Groups 1+2 (2026-09-06): session depth + growth
+
+- Sleep timer: top-right chip cycles ∞ → 5′ → 10′ → 15′; wall-clock in the
+  service, fades the mood bed and ends after the line being read.
+- Breathing hairline under the line: 4s in / 6s out (`AttaMotion.Breath*`),
+  still while paused. The only motion on the screen.
+- Practice from Saved: `PracticeQueue` builds the queue from `feed` or
+  `saved` (user's own lines first, then bookmarks); "Listen" entry on Saved.
+- Share as image: `share/ShareCard.kt` renders a 1080×1920 card (theme
+  gradient, serif line, ATTA mark) via FileProvider (`cache/share/`).
+- Own lines (Plus): editor sheet on Saved, stored in prefs as
+  `custom_lines` entries (`CustomLines`), removable, read aloud in practice.
+- Quiet check-in: once a day when leaving practice — Calm / Okay / Heavy,
+  one `mood_log` entry per date, a fortnight of dots. No streaks.
+
 ## Testing
 
 Build, install on the emulator, drive into Practice, screenshot. English TTS
