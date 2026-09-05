@@ -110,6 +110,566 @@ object Affirmations {
             th = "สิ่งที่คุณมีอยู่ตอนนี้\nครั้งหนึ่งคือสิ่งที่คุณเคยหวัง",
             categoryId = "gratitude",
         ),
+
+        // calm-mornings
+        Affirmation(
+            id = "morning-asks-little",
+            en = "The morning asks for\nnothing but your presence.",
+            th = "เช้าวันนี้ไม่ได้ขออะไร\nนอกจากให้คุณอยู่ตรงนี้",
+            categoryId = "calm-mornings", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "one-thing-first",
+            en = "One thing first.\nThe rest can wait in line.",
+            th = "ทีละอย่างก่อน\nที่เหลือรอคิวได้",
+            categoryId = "calm-mornings", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "quiet-before-noise",
+            en = "Give the first minutes\nto yourself, not the noise.",
+            th = "มอบนาทีแรกของวัน\nให้ตัวเอง ไม่ใช่ให้เสียงรบกวน",
+            categoryId = "calm-mornings", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "day-not-race",
+            en = "Today is a day,\nnot a race.",
+            th = "วันนี้คือหนึ่งวัน\nไม่ใช่การแข่งขัน",
+            categoryId = "calm-mornings",
+        ),
+        Affirmation(
+            id = "soft-start-strong-day",
+            en = "A soft start can still\ncarry a strong day.",
+            th = "การเริ่มต้นที่นุ่มนวล\nก็พาวันที่มั่นคงมาได้",
+            categoryId = "calm-mornings", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "breath-before-plans",
+            en = "Breathe first.\nPlan second.",
+            th = "หายใจก่อน\nค่อยวางแผน",
+            categoryId = "calm-mornings", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "unhurried-is-present",
+            en = "Unhurried is not behind.\nIt is simply present.",
+            th = "ความไม่รีบร้อนไม่ใช่ความล่าช้า\nแต่คือการอยู่กับปัจจุบัน",
+            categoryId = "calm-mornings",
+        ),
+        Affirmation(
+            id = "new-page",
+            en = "The day is a new page.\nWrite it slowly.",
+            th = "วันนี้คือหน้ากระดาษใหม่\nค่อย ๆ เขียนมัน",
+            categoryId = "calm-mornings", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "light-before-worry",
+            en = "Let the light arrive\nbefore the worry does.",
+            th = "ให้แสงมาถึง\nก่อนความกังวล",
+            categoryId = "calm-mornings", daypart = Daypart.MORNING,
+        ),
+
+        // self-worth
+        Affirmation(
+            id = "worth-not-output",
+            en = "Your worth was never\nmeasured in output.",
+            th = "คุณค่าของคุณไม่เคย\nถูกวัดด้วยผลงาน",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "enough-before-proving",
+            en = "You were enough\nbefore you proved anything.",
+            th = "คุณมีค่ามากพอ\nตั้งแต่ก่อนจะพิสูจน์อะไร",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "quiet-progress",
+            en = "Quiet progress\nis still progress.",
+            th = "ความก้าวหน้าที่เงียบงัน\nก็ยังคือความก้าวหน้า",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "not-for-everyone",
+            en = "You are not for everyone.\nYou never needed to be.",
+            th = "คุณไม่จำเป็นต้องถูกใจทุกคน\nและไม่เคยจำเป็นเลย",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "speak-kindly-inward",
+            en = "Speak to yourself the way\nyou speak to someone you love.",
+            th = "พูดกับตัวเอง เหมือนที่พูด\nกับคนที่คุณรัก",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "small-wins-count",
+            en = "Small wins count.\nCount them.",
+            th = "ชัยชนะเล็ก ๆ ก็มีความหมาย\nนับมันด้วย",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "pace-of-others",
+            en = "Someone else's pace\nsays nothing about yours.",
+            th = "จังหวะของคนอื่น\nไม่ได้บอกอะไรเกี่ยวกับคุณ",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "tender-is-strong",
+            en = "Being tender with yourself\nis a kind of strength.",
+            th = "การอ่อนโยนกับตัวเอง\nก็คือความแข็งแกร่งแบบหนึ่ง",
+            categoryId = "self-worth",
+        ),
+        Affirmation(
+            id = "no-verdict-tonight",
+            en = "You are allowed to end the day\nwithout a verdict.",
+            th = "คุณจบวันได้\nโดยไม่ต้องตัดสินตัวเอง",
+            categoryId = "self-worth", daypart = Daypart.NIGHT,
+        ),
+
+        // boundaries
+        Affirmation(
+            id = "peace-no-explanation",
+            en = "Your peace does not\nneed an explanation.",
+            th = "ความสงบของคุณ\nไม่ต้องการคำอธิบาย",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "door-you-close",
+            en = "A boundary is a door\nyou choose to close.",
+            th = "ขอบเขตคือประตู\nที่คุณเลือกจะปิดเอง",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "energy-is-finite",
+            en = "Your energy is finite.\nSpend it like it matters.",
+            th = "พลังของคุณมีจำกัด\nใช้มันกับสิ่งที่สำคัญ",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "not-your-emergency",
+            en = "Not every urgency\nis yours to carry.",
+            th = "ไม่ใช่ทุกความเร่งด่วน\nที่คุณต้องแบก",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "kind-and-firm",
+            en = "You can be kind\nand still be firm.",
+            th = "คุณใจดีได้\nโดยไม่ต้องใจอ่อน",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "distance-kindest-answer",
+            en = "Sometimes distance\nis the kindest answer.",
+            th = "บางครั้งระยะห่าง\nคือคำตอบที่อ่อนโยนที่สุด",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "protect-your-quiet",
+            en = "You do not need permission\nto protect your quiet.",
+            th = "คุณไม่ต้องขออนุญาตใคร\nเพื่อปกป้องความสงบของตัวเอง",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "leave-the-table",
+            en = "You may leave any table\nthat costs you yourself.",
+            th = "คุณลุกจากวงไหนก็ได้\nที่ต้องแลกด้วยตัวตนของคุณ",
+            categoryId = "boundaries",
+        ),
+        Affirmation(
+            id = "world-can-wait",
+            en = "The world can wait\nuntil morning.",
+            th = "โลกรอได้\nจนถึงเช้า",
+            categoryId = "boundaries", daypart = Daypart.NIGHT,
+        ),
+
+        // love
+        Affirmation(
+            id = "love-is-consistent",
+            en = "Real love is rarely loud.\nIt is consistent.",
+            th = "รักแท้ไม่ค่อยเสียงดัง\nแต่สม่ำเสมอ",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "arrive-whole",
+            en = "Come to love whole,\nnot to be completed.",
+            th = "มาหารักทั้งที่เต็มอยู่แล้ว\nไม่ใช่เพื่อให้ใครมาเติม",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "quiet-together",
+            en = "Choose the person\nyou can be quiet with.",
+            th = "เลือกคนที่คุณ\nอยู่เงียบ ๆ ด้วยกันได้",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "teach-others-care",
+            en = "How you treat yourself\nteaches others how to.",
+            th = "วิธีที่คุณดูแลตัวเอง\nคือบทเรียนให้คนอื่นดูแลคุณ",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "attention-is-love",
+            en = "Attention is the oldest\nlanguage of love.",
+            th = "ความใส่ใจคือภาษารัก\nที่เก่าแก่ที่สุด",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "missing-is-proof",
+            en = "Missing someone is proof\nthe love was real.",
+            th = "ความคิดถึงคือหลักฐาน\nว่ารักนั้นมีจริง",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "well-repaired-love",
+            en = "Strong love is not unbroken.\nIt is well-repaired.",
+            th = "รักที่แข็งแรงไม่ใช่รักที่ไม่เคยร้าว\nแต่คือรักที่ซ่อมกันเป็น",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "loved-at-ordinary-pace",
+            en = "Let yourself be loved\nat an ordinary pace.",
+            th = "ปล่อยให้ตัวเองถูกรัก\nในจังหวะธรรมดา ๆ",
+            categoryId = "love",
+        ),
+        Affirmation(
+            id = "kindness-at-home",
+            en = "Kindness given at home\ncounts double.",
+            th = "ความอ่อนโยนที่ให้คนใกล้ตัว\nมีค่าสองเท่า",
+            categoryId = "love",
+        ),
+
+        // focus-work
+        Affirmation(
+            id = "one-honest-hour",
+            en = "One honest hour beats\na scattered afternoon.",
+            th = "หนึ่งชั่วโมงที่จดจ่อ\nชนะทั้งบ่ายที่ฟุ้งซ่าน",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "begin-badly",
+            en = "Begin badly if you must.\nJust begin.",
+            th = "เริ่มแบบไม่สมบูรณ์ก็ได้\nขอแค่ได้เริ่ม",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "finished-teaches",
+            en = "Finished teaches more\nthan perfect ever will.",
+            th = "งานที่เสร็จสอนคุณ\nมากกว่างานที่สมบูรณ์แบบ",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "busy-fog-focus-path",
+            en = "Busy is a fog.\nFocus is a path.",
+            th = "ความยุ่งคือหมอก\nสมาธิคือทาง",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "attention-currency",
+            en = "Your attention is\nthe day's true currency.",
+            th = "ความสนใจของคุณ\nคือเงินตราที่แท้จริงของวัน",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "stepping-away-craft",
+            en = "Stepping away\nis part of the craft.",
+            th = "การถอยออกมาพัก\nคือส่วนหนึ่งของฝีมือ",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "only-next-step",
+            en = "You do not need the whole path,\nonly the next step.",
+            th = "คุณไม่ต้องเห็นทางทั้งเส้น\nแค่ก้าวถัดไปก็พอ",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "clear-one-corner",
+            en = "Clear one corner.\nThe mind follows.",
+            th = "เคลียร์มุมเล็ก ๆ หนึ่งมุม\nแล้วใจจะตามมา",
+            categoryId = "focus-work",
+        ),
+        Affirmation(
+            id = "work-ends-you-continue",
+            en = "Work ends. You continue.\nDo not confuse the two.",
+            th = "งานมีเวลาจบ แต่คุณไปต่อ\nอย่าสับสนสองสิ่งนี้",
+            categoryId = "focus-work", daypart = Daypart.NIGHT,
+        ),
+
+        // gratitude
+        Affirmation(
+            id = "ordinary-fortune",
+            en = "An ordinary day\nis a quiet fortune.",
+            th = "วันธรรมดา ๆ\nคือโชคลาภที่เงียบงัน",
+            categoryId = "gratitude",
+        ),
+        Affirmation(
+            id = "body-carried-you",
+            en = "Your body carried you\nthrough every hard day so far.",
+            th = "ร่างกายนี้พาคุณผ่าน\nทุกวันที่ยากมาแล้ว",
+            categoryId = "gratitude",
+        ),
+        Affirmation(
+            id = "name-three-things",
+            en = "Name three small things.\nWatch the day soften.",
+            th = "ลองนึกถึงสิ่งดี ๆ สามอย่าง\nแล้ววันจะอ่อนโยนลง",
+            categoryId = "gratitude", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "enough-on-the-table",
+            en = "There is enough\non your table tonight.",
+            th = "สิ่งที่มีอยู่บนโต๊ะคืนนี้\nก็เพียงพอแล้ว",
+            categoryId = "gratitude", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "someones-hope",
+            en = "Someone once hoped\nfor the life you live.",
+            th = "ชีวิตที่คุณใช้อยู่ตอนนี้\nคือความหวังของใครบางคน",
+            categoryId = "gratitude",
+        ),
+        Affirmation(
+            id = "size-of-a-breath",
+            en = "Gratitude begins\nat the size of a breath.",
+            th = "ความขอบคุณเริ่มต้นได้\nแค่ขนาดหนึ่งลมหายใจ",
+            categoryId = "gratitude",
+        ),
+        Affirmation(
+            id = "count-what-remains",
+            en = "Count what remains,\nnot what is missing.",
+            th = "นับสิ่งที่ยังอยู่\nไม่ใช่สิ่งที่หายไป",
+            categoryId = "gratitude",
+        ),
+        Affirmation(
+            id = "every-season-kept-you",
+            en = "Every season kept you.\nThis one will too.",
+            th = "ทุกฤดูที่ผ่านมาดูแลคุณไว้\nฤดูนี้ก็เช่นกัน",
+            categoryId = "gratitude",
+        ),
+        Affirmation(
+            id = "thank-who-stayed",
+            en = "The people who stayed\nare worth a quiet thank you.",
+            th = "คนที่ยังอยู่ข้าง ๆ\nคู่ควรกับคำขอบคุณเงียบ ๆ",
+            categoryId = "gratitude",
+        ),
+
+        // rest
+        Affirmation(
+            id = "rest-not-earned",
+            en = "Rest does not need\nto be earned.",
+            th = "การพักผ่อน\nไม่ต้องแลกมาด้วยอะไร",
+            categoryId = "rest",
+        ),
+        Affirmation(
+            id = "tired-is-information",
+            en = "Tired is information,\nnot weakness.",
+            th = "ความเหนื่อยคือสัญญาณ\nไม่ใช่ความอ่อนแอ",
+            categoryId = "rest",
+        ),
+        Affirmation(
+            id = "doing-nothing-vital",
+            en = "Doing nothing\nis doing something vital.",
+            th = "การไม่ทำอะไรเลย\nก็คือการทำสิ่งสำคัญอยู่",
+            categoryId = "rest",
+        ),
+        Affirmation(
+            id = "rest-before-empty",
+            en = "Rest before you are empty.\nThat is wisdom, not laziness.",
+            th = "พักก่อนที่จะหมดแรง\nนั่นคือปัญญา ไม่ใช่ความขี้เกียจ",
+            categoryId = "rest",
+        ),
+        Affirmation(
+            id = "evening-be-slow",
+            en = "Let the evening be slow.\nYou have done the day.",
+            th = "ปล่อยให้ค่ำคืนช้าลง\nคุณผ่านวันนี้มาแล้ว",
+            categoryId = "rest", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "rest-not-on-screen",
+            en = "Real rest is rarely\nfound on a screen.",
+            th = "การพักที่แท้จริง\nแทบไม่เคยอยู่บนหน้าจอ",
+            categoryId = "rest",
+        ),
+        Affirmation(
+            id = "ten-quiet-minutes",
+            en = "Ten quiet minutes\ncan return a whole hour.",
+            th = "สิบนาทีที่เงียบสงบ\nคืนพลังให้ได้ทั้งชั่วโมง",
+            categoryId = "rest",
+        ),
+        Affirmation(
+            id = "sea-rests-between-waves",
+            en = "Even the sea\nrests between waves.",
+            th = "แม้แต่ทะเล\nยังพักระหว่างคลื่น",
+            categoryId = "rest",
+        ),
+        Affirmation(
+            id = "only-task-soften",
+            en = "Tonight, your only task\nis to soften.",
+            th = "คืนนี้ หน้าที่เดียวของคุณ\nคือผ่อนลง",
+            categoryId = "rest", daypart = Daypart.NIGHT,
+        ),
+
+        // healing
+        Affirmation(
+            id = "healing-circles-back",
+            en = "Healing circles back.\nThat is still forward.",
+            th = "การเยียวยาเดินวนบ้าง\nแต่นั่นก็ยังคือการไปต่อ",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "scar-learned-to-close",
+            en = "A scar is proof\nthe skin learned to close.",
+            th = "รอยแผลเป็นคือหลักฐาน\nว่าร่างกายเรียนรู้ที่จะสมาน",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "grief-own-calendar",
+            en = "Grief keeps its own calendar.\nLet it.",
+            th = "ความเศร้ามีปฏิทินของมันเอง\nปล่อยให้เป็นไป",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "not-the-hands",
+            en = "You are not the hands\nthat hurt you.",
+            th = "คุณไม่ใช่มือ\nที่เคยทำร้ายคุณ",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "next-chapter-understands",
+            en = "Some chapters are only\nunderstood from the next one.",
+            th = "บางบทของชีวิต เข้าใจได้\nก็ต่อเมื่ออ่านบทถัดไป",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "beginning-again",
+            en = "Beginning again\nis not starting over.",
+            th = "การเริ่มใหม่อีกครั้ง\nไม่ใช่การนับหนึ่งใหม่",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "gentle-with-then",
+            en = "Be gentle with the person\nyou had to be back then.",
+            th = "อ่อนโยนกับตัวเอง\nในวันที่ต้องเป็นแบบนั้น",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "quiet-days-mend",
+            en = "Quiet days mend things\nthat loud ones broke.",
+            th = "วันที่เงียบสงบ ซ่อมแซมสิ่งที่\nวันอันวุ่นวายทำพัง",
+            categoryId = "healing",
+        ),
+        Affirmation(
+            id = "time-with-kindness",
+            en = "Time alone does not heal.\nTime with kindness does.",
+            th = "เวลาอย่างเดียวไม่ได้เยียวยา\nเวลาที่มาพร้อมความอ่อนโยนต่างหาก",
+            categoryId = "healing",
+        ),
+
+        // courage
+        Affirmation(
+            id = "asking-is-braver",
+            en = "Asking is braver\nthan pretending to know.",
+            th = "การกล้าถาม กล้าหาญกว่า\nการแกล้งทำเป็นรู้",
+            categoryId = "courage",
+        ),
+        Affirmation(
+            id = "whisper-volume-brave",
+            en = "Do one brave thing\nat whisper volume.",
+            th = "ทำสิ่งกล้าหาญหนึ่งอย่าง\nในระดับเสียงกระซิบ",
+            categoryId = "courage",
+        ),
+        Affirmation(
+            id = "fear-does-not-steer",
+            en = "Fear may ride along.\nIt does not steer.",
+            th = "ความกลัวนั่งมาด้วยได้\nแต่ห้ามจับพวงมาลัย",
+            categoryId = "courage",
+        ),
+        Affirmation(
+            id = "start-scared",
+            en = "You can start scared.\nMost good things do.",
+            th = "เริ่มทั้งที่กลัวก็ได้\nสิ่งดี ๆ ส่วนใหญ่เริ่มแบบนั้น",
+            categoryId = "courage",
+        ),
+        Affirmation(
+            id = "truth-said-softly",
+            en = "Telling the truth softly\nstill counts as courage.",
+            th = "การพูดความจริงอย่างนุ่มนวล\nก็นับเป็นความกล้า",
+            categoryId = "courage",
+        ),
+        Affirmation(
+            id = "braver-entrance",
+            en = "Returning after failing\nis the braver entrance.",
+            th = "การกลับมาหลังล้มเหลว\nคือการก้าวเข้ามาที่กล้าหาญกว่า",
+            categoryId = "courage",
+        ),
+        Affirmation(
+            id = "standing-still-stance",
+            en = "Standing still in the storm\nis also a stance.",
+            th = "การยืนนิ่งกลางพายุ\nก็คือจุดยืนแบบหนึ่ง",
+            categoryId = "courage",
+        ),
+        Affirmation(
+            id = "courage-gets-up",
+            en = "Some courage looks like\ngetting up on time.",
+            th = "ความกล้าบางแบบ หน้าตาเหมือน\nการลุกจากที่นอนตรงเวลา",
+            categoryId = "courage", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "future-self-thankful",
+            en = "Somewhere ahead, you are\nthankful you began today.",
+            th = "ตัวคุณในวันข้างหน้า\nกำลังขอบคุณที่วันนี้คุณเริ่ม",
+            categoryId = "courage",
+        ),
+
+        // nights
+        Affirmation(
+            id = "rest-in-the-night",
+            en = "You do not have to solve\nthe night. Only rest in it.",
+            th = "คุณไม่ต้องหาคำตอบให้ค่ำคืน\nแค่พักอยู่ในนั้นก็พอ",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "tomorrows-problems",
+            en = "Tomorrow's problems\nkeep until tomorrow.",
+            th = "ปัญหาของพรุ่งนี้\nเก็บไว้ถึงพรุ่งนี้ได้",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "leave-replay-unwatched",
+            en = "You may leave the replay\nunwatched tonight.",
+            th = "คืนนี้ไม่ต้องเปิดฉายซ้ำ\nเรื่องราวของวันก็ได้",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "lay-the-body-down",
+            en = "Lay the body down.\nThe mind will learn from it.",
+            th = "วางร่างกายลงก่อน\nแล้วใจจะเรียนรู้ตาม",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "dark-is-soft",
+            en = "The dark is not empty.\nIt is soft.",
+            th = "ความมืดไม่ได้ว่างเปล่า\nมันอ่อนนุ่ม",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "unfinished-place-to-sleep",
+            en = "Unfinished is a place\nto sleep, too.",
+            th = "สิ่งที่ยังไม่เสร็จ\nก็เป็นที่ให้หลับได้เหมือนกัน",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "forgive-todays-edges",
+            en = "Forgive today\nits rough edges.",
+            th = "ให้อภัยวันนี้\nในความไม่เรียบร้อยของมัน",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "enough-for-now",
+            en = "Night is how the world\nsays: enough for now.",
+            th = "กลางคืนคือวิธีที่โลกบอกว่า\nพอแค่นี้ก่อน",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "sleep-is-trust",
+            en = "Sleep is an act of trust\nthat morning will come.",
+            th = "การนอนหลับคือความเชื่อใจ\nว่าเช้าวันใหม่จะมาถึง",
+            categoryId = "nights", daypart = Daypart.NIGHT,
+        ),
     )
 
     fun byId(id: String?): Affirmation? = All.firstOrNull { it.id == id }

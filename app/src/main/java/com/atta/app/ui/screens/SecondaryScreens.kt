@@ -46,6 +46,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -391,6 +393,7 @@ fun SavedScreen(
                             color = colors.inkAlpha(0.35f),
                             modifier = Modifier
                                 .clip(CircleShape)
+                                .semantics { contentDescription = "Remove this line" }
                                 .clickable { scope.launch { prefs.removeCustomLine(line.id) } }
                                 .padding(10.dp),
                         )
@@ -469,6 +472,7 @@ fun SavedScreen(
                                 modifier = Modifier
                                     .size(32.dp)
                                     .clip(CircleShape)
+                                    .semantics { contentDescription = "Remove from saved" }
                                     .clickable { scope.launch { prefs.toggleSaved(affirmation.id) } },
                                 contentAlignment = Alignment.Center,
                             ) {

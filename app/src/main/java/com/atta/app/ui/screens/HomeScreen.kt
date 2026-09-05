@@ -60,6 +60,8 @@ import com.atta.app.data.Plans
 import com.atta.app.data.WidgetTheme
 import com.atta.app.data.WidgetThemes
 import com.atta.app.notify.DailyLineScheduler
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.atta.app.share.ShareCard
 import com.atta.app.ui.components.BookmarkIcon
 import com.atta.app.ui.components.ChevronDownIcon
@@ -240,6 +242,7 @@ fun HomeCard(
                         modifier = Modifier
                             .size(44.dp)
                             .clip(CircleShape)
+                            .semantics { contentDescription = "Close" }
                             .clickable(onClick = onClose),
                         contentAlignment = Alignment.CenterStart,
                     ) {
@@ -259,6 +262,7 @@ fun HomeCard(
                         modifier = Modifier
                             .size(44.dp)
                             .clip(CircleShape)
+                            .semantics { contentDescription = "Menu" }
                             .clickable(onClick = onOpenMenu),
                         contentAlignment = Alignment.Center,
                     ) {
@@ -310,14 +314,18 @@ fun HomeCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    ActionCircle(theme = theme, onClick = onToggleSave) {
+                    ActionCircle(
+                        theme = theme,
+                        description = if (saved) "Remove from saved" else "Save this line",
+                        onClick = onToggleSave,
+                    ) {
                         BookmarkIcon(
                             color = if (saved) AttaPalette.Champagne else theme.ink,
                             filled = saved,
                             modifier = Modifier.size(17.dp),
                         )
                     }
-                    ActionCircle(theme = theme, onClick = onShare) {
+                    ActionCircle(theme = theme, description = "Share", onClick = onShare) {
                         ShareIcon(color = theme.ink, modifier = Modifier.size(17.dp))
                     }
                 }
@@ -361,6 +369,7 @@ fun HomeCard(
 @Composable
 private fun ActionCircle(
     theme: WidgetTheme,
+    description: String,
     onClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -369,6 +378,7 @@ private fun ActionCircle(
             .size(44.dp)
             .clip(CircleShape)
             .border(1.dp, theme.ink.copy(alpha = 0.22f), CircleShape)
+            .semantics { contentDescription = description }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,

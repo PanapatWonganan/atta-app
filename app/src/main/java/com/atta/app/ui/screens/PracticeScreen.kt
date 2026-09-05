@@ -42,6 +42,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -136,6 +138,7 @@ fun PracticeScreen(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
+                        .semantics { contentDescription = "Close practice" }
                         .clickable(onClick = close),
                     contentAlignment = Alignment.CenterStart,
                 ) {
@@ -164,6 +167,13 @@ fun PracticeScreen(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
+                        .semantics {
+                            contentDescription = if (playback.timerMinutes == 0) {
+                                "Sleep timer, off"
+                            } else {
+                                "Sleep timer, ${playback.timerMinutes} minutes"
+                            }
+                        }
                         .clickable {
                             val next = when (playback.timerMinutes) {
                                 0 -> 5
@@ -226,6 +236,9 @@ fun PracticeScreen(
                     .size(76.dp)
                     .clip(CircleShape)
                     .border(1.dp, theme.ink.copy(alpha = 0.28f), CircleShape)
+                    .semantics {
+                        contentDescription = if (playback.playing) "Pause" else "Play"
+                    }
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
