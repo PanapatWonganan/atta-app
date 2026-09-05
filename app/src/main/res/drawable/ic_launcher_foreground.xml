@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- the brand mark: a single thin champagne rule, matte -->
+    <path
+        android:fillColor="#C2A57B"
+        android:pathData="M53.25,34h1.5v40h-1.5z" />
+</vector>

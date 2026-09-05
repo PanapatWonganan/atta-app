@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@300;400;500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#EDE9E2;-webkit-font-smoothing:antialiased}
+a{color:#8A7550;text-decoration:none}
+a:hover{color:#C2A57B}
+@keyframes atta-breathe{0%{transform:scale(1);opacity:.55}40%{transform:scale(1.12);opacity:.85}100%{transform:scale(1);opacity:.55}}
+</style>
+</helmet>
+
+<div style="width:1560px;margin:0 auto;background:#F7F4EF;font-family:'IBM Plex Sans Thai',system-ui,sans-serif;color:#1C1917;padding:0 0 96px">
+
+  <div style="padding:88px 110px 56px;display:flex;flex-direction:column;gap:28px;border-bottom:1px solid rgba(28,25,23,.1)">
+    <div style="display:flex;align-items:baseline;gap:16px">
+      <div style="font-family:'Noto Serif Thai',serif;font-size:40px;font-weight:500;letter-spacing:.28em">ATTA</div>
+      <div style="width:40px;height:1px;background:#C2A57B"></div>
+      <div style="font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(28,25,23,.5)">Phase B · C — Onboarding, paywall, all screens</div>
+    </div>
+    <div style="font-size:15px;line-height:1.75;color:rgba(28,25,23,.78);max-width:920px;text-wrap:pretty">Built on the Phase A tokens. Affirmation copy and the ten category names are still my placeholders — everything swaps in verbatim when yours arrive. One accent per screen throughout: champagne carries the UI, sage appears once on the result screen, and nothing else gets colour. Dark mode inverts canvas/ink tokens; two dark examples are shown, the rest follow mechanically.</div>
+  </div>
+
+  <div style="padding:72px 110px 0;display:flex;flex-direction:column;gap:40px">
+    <div style="display:flex;align-items:baseline;gap:16px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#C2A57B;font-variant-numeric:tabular-nums">06</div>
+      <div style="font-family:'Noto Serif Thai',serif;font-size:28px;font-weight:400">Onboarding</div>
+      <div style="font-size:13px;color:rgba(28,25,23,.5)">Welcome → 5 questions → processing → result → paywall (§07)</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:36px">
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="flex:1"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center">
+              <div style="width:1px;height:44px;background:#C2A57B"></div>
+              <div style="font-family:'Noto Serif Thai',serif;font-size:22px;font-weight:500;letter-spacing:.3em;margin-left:.3em">ATTA</div>
+              <div style="font-family:'Noto Serif Thai',serif;font-size:16.5px;line-height:1.62;color:rgba(28,25,23,.85);max-width:210px;text-wrap:balance">One quiet line, every morning, on your home screen.</div>
+            </div>
+            <div style="flex:1.3"></div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="height:46px;border-radius:14px;background:#1C1917;color:#F2EDE6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.4px">Begin</div>
+              <div style="text-align:center;font-size:11px;color:rgba(28,25,23,.5)">Takes about a minute</div>
+            </div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(28,25,23,.25);margin:16px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Welcome.</strong> No carousel, no skip button to manage. One promise, one action.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="display:flex;gap:5px;margin-top:20px">
+              <div style="flex:1;height:2px;background:#C2A57B"></div><div style="flex:1;height:2px;background:#C2A57B"></div><div style="flex:1;height:2px;background:rgba(28,25,23,.12)"></div><div style="flex:1;height:2px;background:rgba(28,25,23,.12)"></div><div style="flex:1;height:2px;background:rgba(28,25,23,.12)"></div>
+            </div>
+            <div style="margin-top:34px;display:flex;flex-direction:column;gap:12px">
+              <div style="font-size:9.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:rgba(28,25,23,.45)">2 of 5</div>
+              <div style="font-family:'Noto Serif Thai',serif;font-size:20px;line-height:1.55;max-width:230px;text-wrap:balance">What do your mornings usually feel like?</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:28px">
+              <div style="padding:15px 18px;border-radius:14px;background:#EDE6DC;font-size:13px;color:rgba(28,25,23,.8)">Rushed before I'm awake</div>
+              <div style="padding:15px 18px;border-radius:14px;background:#F7F4EF;border:1px solid #C2A57B;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center"><span>Fine, but a little flat</span><div style="width:14px;height:14px;border-radius:50%;background:#C2A57B;display:flex;align-items:center;justify-content:center"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4.2 3.2 6 6.5 2.2" stroke="#F7F4EF" stroke-width="1.3" stroke-linecap="round"/></svg></div></div>
+              <div style="padding:15px 18px;border-radius:14px;background:#EDE6DC;font-size:13px;color:rgba(28,25,23,.8)">Heavy to get moving</div>
+              <div style="padding:15px 18px;border-radius:14px;background:#EDE6DC;font-size:13px;color:rgba(28,25,23,.8)">Quiet — I want to keep it</div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="height:46px;border-radius:14px;background:#1C1917;color:#F2EDE6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.4px">Continue</div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(28,25,23,.25);margin:16px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Questions.</strong> Single-select cards, hairline progress. Answers seed categories and the first widget theme.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;gap:36px">
+            <div style="position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center">
+              <div style="position:absolute;inset:0;border-radius:50%;border:1px solid #C2A57B;animation:atta-breathe 10s ease-in-out infinite"></div>
+              <div style="position:absolute;inset:18px;border-radius:50%;border:1px solid rgba(194,165,123,.4)"></div>
+              <div style="width:8px;height:8px;border-radius:50%;background:#C2A57B"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;text-align:center">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:17px;line-height:1.6;color:rgba(28,25,23,.85)">Shaping your first week</div>
+              <div style="font-size:11.5px;line-height:1.7;color:rgba(28,25,23,.5)">Choosing lines that match<br>your mornings</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Processing.</strong> The breathing ring — 4s in, 6s out. Doubles as the app's loading state everywhere.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="margin-top:40px;display:flex;flex-direction:column;gap:14px">
+              <div style="font-size:9.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:#7E937F">Your practice</div>
+              <div style="font-family:'Noto Serif Thai',serif;font-size:20px;line-height:1.55;max-width:230px;text-wrap:balance">Slow mornings, firmer edges, earlier nights.</div>
+              <div style="font-size:12px;line-height:1.7;color:rgba(28,25,23,.6);max-width:230px">Your first week draws from these three. You can change them anytime.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:26px">
+              <div style="padding:14px 18px;border-radius:14px;background:#EDE6DC;display:flex;align-items:center;gap:12px"><div style="width:6px;height:6px;border-radius:50%;background:#9AAE9C"></div><div style="font-size:13px;font-weight:500">Calm mornings</div></div>
+              <div style="padding:14px 18px;border-radius:14px;background:#EDE6DC;display:flex;align-items:center;gap:12px"><div style="width:6px;height:6px;border-radius:50%;background:#9AAE9C"></div><div style="font-size:13px;font-weight:500">Boundaries</div></div>
+              <div style="padding:14px 18px;border-radius:14px;background:#EDE6DC;display:flex;align-items:center;gap:12px"><div style="width:6px;height:6px;border-radius:50%;background:#9AAE9C"></div><div style="font-size:13px;font-weight:500">Rest</div></div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="height:46px;border-radius:14px;background:#1C1917;color:#F2EDE6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.4px">See my first line</div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(28,25,23,.25);margin:16px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Result.</strong> The one sage screen. The CTA promises the product, not the paywall — the first line shows before the ask.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:88px 110px 0;display:flex;flex-direction:column;gap:40px">
+    <div style="display:flex;align-items:baseline;gap:16px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#C2A57B;font-variant-numeric:tabular-nums">07</div>
+      <div style="font-family:'Noto Serif Thai',serif;font-size:28px;font-weight:400">Paywall</div>
+      <div style="font-size:13px;color:rgba(28,25,23,.5)">Closes without pressure — light and dark</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:36px;align-items:start">
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 22px 18px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)">9:41</div><div style="font-size:11px;color:rgba(28,25,23,.45)">Not now</div></div>
+            <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:20px;line-height:1.5;max-width:240px;text-wrap:balance">Keep tomorrow's line coming.</div>
+              <div style="font-size:11.5px;line-height:1.65;color:rgba(28,25,23,.6);max-width:240px">Every theme, every category, and the widget on your home screen.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:20px">
+              <div style="display:flex;gap:10px;align-items:baseline"><div style="width:12px;height:1px;background:#C2A57B;transform:translateY(-3px)"></div><div style="font-size:11.5px;color:rgba(28,25,23,.75)"><strong style="font-weight:500">Today</strong> — everything unlocks</div></div>
+              <div style="display:flex;gap:10px;align-items:baseline"><div style="width:12px;height:1px;background:#C2A57B;transform:translateY(-3px)"></div><div style="font-size:11.5px;color:rgba(28,25,23,.75)"><strong style="font-weight:500">Day 5</strong> — we remind you the trial is ending</div></div>
+              <div style="display:flex;gap:10px;align-items:baseline"><div style="width:12px;height:1px;background:#C2A57B;transform:translateY(-3px)"></div><div style="font-size:11.5px;color:rgba(28,25,23,.75)"><strong style="font-weight:500">Day 7</strong> — trial ends. Nothing charges before this</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:20px">
+              <div style="padding:13px 16px;border-radius:14px;border:1px solid rgba(28,25,23,.14);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12.5px;font-weight:500">Weekly</div><div style="font-size:10.5px;color:rgba(28,25,23,.5)">7 days free, then $2.99 / week</div></div><div style="width:15px;height:15px;border-radius:50%;border:1px solid rgba(28,25,23,.25)"></div></div>
+              <div style="padding:13px 16px;border-radius:14px;border:1.5px solid #C2A57B;background:#fff;display:flex;justify-content:space-between;align-items:center;position:relative"><div style="position:absolute;top:-7px;left:14px;background:#C2A57B;color:#F7F4EF;font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:6px">Most chosen</div><div><div style="font-size:12.5px;font-weight:500">Yearly</div><div style="font-size:10.5px;color:rgba(28,25,23,.5)">7 days free, then $39.99 / year · $3.33 a month</div></div><div style="width:15px;height:15px;border-radius:50%;background:#C2A57B;display:flex;align-items:center;justify-content:center"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4.2 3.2 6 6.5 2.2" stroke="#F7F4EF" stroke-width="1.3" stroke-linecap="round"/></svg></div></div>
+              <div style="padding:13px 16px;border-radius:14px;border:1px solid rgba(28,25,23,.14);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12.5px;font-weight:500">Lifetime</div><div style="font-size:10.5px;color:rgba(28,25,23,.5)">$79.99 once. Yours for good</div></div><div style="width:15px;height:15px;border-radius:50%;border:1px solid rgba(28,25,23,.25)"></div></div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div style="height:46px;border-radius:14px;background:#1C1917;color:#F2EDE6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.4px">Start my 7 days free</div>
+              <div style="text-align:center;font-size:10px;line-height:1.5;color:rgba(28,25,23,.45)">Cancel anytime in two taps · Restore purchase</div>
+            </div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(28,25,23,.25);margin:12px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)">Light. "Not now" is visible from second one — trust is the close.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#191517;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 22px 18px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:8.5px;font-weight:600;color:rgba(242,237,230,.55)">9:41</div><div style="font-size:11px;color:rgba(242,237,230,.45)">Not now</div></div>
+            <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:20px;line-height:1.5;max-width:240px;color:#F2EDE6;text-wrap:balance">Keep tomorrow's line coming.</div>
+              <div style="font-size:11.5px;line-height:1.65;color:rgba(242,237,230,.55);max-width:240px">Every theme, every category, and the widget on your home screen.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:20px">
+              <div style="display:flex;gap:10px;align-items:baseline"><div style="width:12px;height:1px;background:#C2A57B;transform:translateY(-3px)"></div><div style="font-size:11.5px;color:rgba(242,237,230,.7)"><strong style="font-weight:500;color:#F2EDE6">Today</strong> — everything unlocks</div></div>
+              <div style="display:flex;gap:10px;align-items:baseline"><div style="width:12px;height:1px;background:#C2A57B;transform:translateY(-3px)"></div><div style="font-size:11.5px;color:rgba(242,237,230,.7)"><strong style="font-weight:500;color:#F2EDE6">Day 5</strong> — we remind you the trial is ending</div></div>
+              <div style="display:flex;gap:10px;align-items:baseline"><div style="width:12px;height:1px;background:#C2A57B;transform:translateY(-3px)"></div><div style="font-size:11.5px;color:rgba(242,237,230,.7)"><strong style="font-weight:500;color:#F2EDE6">Day 7</strong> — trial ends. Nothing charges before this</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:20px">
+              <div style="padding:13px 16px;border-radius:14px;border:1px solid rgba(242,237,230,.16);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12.5px;font-weight:500;color:#F2EDE6">Weekly</div><div style="font-size:10.5px;color:rgba(242,237,230,.45)">7 days free, then $2.99 / week</div></div><div style="width:15px;height:15px;border-radius:50%;border:1px solid rgba(242,237,230,.3)"></div></div>
+              <div style="padding:13px 16px;border-radius:14px;border:1.5px solid #C2A57B;background:rgba(194,165,123,.08);display:flex;justify-content:space-between;align-items:center;position:relative"><div style="position:absolute;top:-7px;left:14px;background:#C2A57B;color:#191517;font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:6px">Most chosen</div><div><div style="font-size:12.5px;font-weight:500;color:#F2EDE6">Yearly</div><div style="font-size:10.5px;color:rgba(242,237,230,.45)">7 days free, then $39.99 / year · $3.33 a month</div></div><div style="width:15px;height:15px;border-radius:50%;background:#C2A57B;display:flex;align-items:center;justify-content:center"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4.2 3.2 6 6.5 2.2" stroke="#191517" stroke-width="1.3" stroke-linecap="round"/></svg></div></div>
+              <div style="padding:13px 16px;border-radius:14px;border:1px solid rgba(242,237,230,.16);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12.5px;font-weight:500;color:#F2EDE6">Lifetime</div><div style="font-size:10.5px;color:rgba(242,237,230,.45)">$79.99 once. Yours for good</div></div><div style="width:15px;height:15px;border-radius:50%;border:1px solid rgba(242,237,230,.3)"></div></div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div style="height:46px;border-radius:14px;background:#F2EDE6;color:#1C1917;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.4px">Start my 7 days free</div>
+              <div style="text-align:center;font-size:10px;line-height:1.5;color:rgba(242,237,230,.4)">Cancel anytime in two taps · Restore purchase</div>
+            </div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(242,237,230,.25);margin:12px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)">Dark. Tokens invert; champagne stays matte on both.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px;padding-top:8px">
+        <div style="background:#EDE6DC;border-radius:20px;padding:32px 34px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(28,25,23,.45)">Why this closes</div>
+          <div style="font-size:14px;line-height:1.75;color:rgba(28,25,23,.78);text-wrap:pretty">The paywall arrives <strong style="font-weight:600">after</strong> the result screen has shown a real personalized line, so it asks the user to keep something they already have — a stronger position than promising something unseen.</div>
+          <div style="font-size:14px;line-height:1.75;color:rgba(28,25,23,.78);text-wrap:pretty">The trial timeline defuses the number-one cancellation anxiety ("I'll forget and get charged") by making the Day-5 reminder a stated feature. Apps that adopted this pattern report higher trial starts than urgency timers — and it is the only version consistent with this brand.</div>
+          <div style="font-size:14px;line-height:1.75;color:rgba(28,25,23,.78);text-wrap:pretty">Yearly is pre-selected and framed per-month; Lifetime anchors it from above, Weekly from below. No strikethrough prices, no countdown, no shaking buttons.</div>
+        </div>
+        <div style="background:#fff;border-radius:20px;padding:28px 34px;display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(28,25,23,.45)">Decline path</div>
+          <div style="font-size:14px;line-height:1.75;color:rgba(28,25,23,.78)">"Not now" keeps the free tier: one line a day, Linen theme only, no widget. The widget is the upgrade trigger — it reappears as a quiet inline card in the gallery, never as a popup.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:88px 110px 0;display:flex;flex-direction:column;gap:40px">
+    <div style="display:flex;align-items:baseline;gap:16px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#C2A57B;font-variant-numeric:tabular-nums">08</div>
+      <div style="font-family:'Noto Serif Thai',serif;font-size:28px;font-weight:400">Core screens</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:36px">
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:linear-gradient(160deg,#F5E7D8 0%,#EFD9CB 52%,#E6CBC0 100%);aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(42,33,28,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(42,33,28,.45);border-radius:2px"></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:22px">
+              <div style="font-size:9px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:rgba(42,33,28,.5)">Morning · 1 Sep</div>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1" fill="rgba(42,33,28,.5)"/><circle cx="8" cy="8" r="1" fill="rgba(42,33,28,.5)"/><circle cx="8" cy="13" r="1" fill="rgba(42,33,28,.5)"/></svg>
+            </div>
+            <div style="flex:1"></div>
+            <div style="font-family:'Noto Serif Thai',serif;font-size:21px;line-height:1.62;color:#2A211C;max-width:240px;text-wrap:balance">Begin gently. Nothing is behind you.</div>
+            <div style="width:26px;height:1px;background:rgba(42,33,28,.3);margin-top:22px"></div>
+            <div style="flex:1.2"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;gap:12px">
+                <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(42,33,28,.22);display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8v11l-4-3-4 3v-11z" stroke="#2A211C" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+                <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(42,33,28,.22);display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 10V2.5m0 0L5 5.5M8 2.5l3 3M3 9v4.5h10V9" stroke="#2A211C" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              </div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;border:1px solid rgba(42,33,28,.22);display:flex;align-items:center;gap:7px"><div style="width:9px;height:9px;border-radius:50%;background:linear-gradient(140deg,#F5E7D8,#E6CBC0);box-shadow:0 0 0 1px rgba(42,33,28,.2)"></div><span style="font-size:10px;font-weight:500;color:rgba(42,33,28,.7)">Dawn</span></div>
+            </div>
+            <div style="display:flex;justify-content:center;margin-top:14px"><svg width="12" height="6" viewBox="0 0 12 6" fill="none"><path d="M1 5 6 1l5 4" stroke="rgba(42,33,28,.35)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(42,33,28,.25);margin:10px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Home.</strong> Full-bleed theme, one card per swipe. Save · share · theme; the chevron hints the vertical feed.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:linear-gradient(150deg,#2B2627 0%,#211D1E 52%,#151213 100%);aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(237,230,220,.55)"><span>21:30</span><div style="width:11px;height:6px;border:1px solid rgba(237,230,220,.45);border-radius:2px"></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:22px">
+              <div style="font-size:9px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:rgba(237,230,220,.5)">Night · 1 Sep</div>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1" fill="rgba(237,230,220,.5)"/><circle cx="8" cy="8" r="1" fill="rgba(237,230,220,.5)"/><circle cx="8" cy="13" r="1" fill="rgba(237,230,220,.5)"/></svg>
+            </div>
+            <div style="flex:1"></div>
+            <div style="font-family:'Noto Serif Thai',serif;font-size:21px;line-height:1.62;color:#EDE6DC;max-width:240px;text-wrap:balance">You did enough today, even the parts no one saw.</div>
+            <div style="width:26px;height:1px;background:#C2A57B;margin-top:22px"></div>
+            <div style="flex:1.2"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;gap:12px">
+                <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(237,230,220,.25);display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8v11l-4-3-4 3v-11z" fill="#C2A57B" stroke="#C2A57B" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+                <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(237,230,220,.25);display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 10V2.5m0 0L5 5.5M8 2.5l3 3M3 9v4.5h10V9" stroke="#EDE6DC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              </div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;border:1px solid rgba(237,230,220,.25);display:flex;align-items:center;gap:7px"><div style="width:9px;height:9px;border-radius:50%;background:linear-gradient(140deg,#2B2627,#151213);box-shadow:0 0 0 1px rgba(237,230,220,.3)"></div><span style="font-size:10px;font-weight:500;color:rgba(237,230,220,.7)">Onyx</span></div>
+            </div>
+            <div style="display:flex;justify-content:center;margin-top:14px"><svg width="12" height="6" viewBox="0 0 12 6" fill="none"><path d="M1 5 6 1l5 4" stroke="rgba(237,230,220,.35)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(237,230,220,.25);margin:10px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Home, night.</strong> Saved state fills the bookmark in champagne — the app's single filled icon.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 0;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="margin-top:24px;display:flex;flex-direction:column;gap:6px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:19px">Widgets</div>
+              <div style="font-size:11px;line-height:1.6;color:rgba(28,25,23,.55)">Pick a theme. It updates with your line each morning.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:7px"><div style="width:100%;aspect-ratio:330/140;border-radius:14px;padding:13px 15px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(160deg,#F5E7D8 0%,#E6CBC0 100%);box-shadow:0 3px 14px rgba(28,25,23,.08)"><div style="font-size:5.5px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:rgba(42,33,28,.45)">Dawn</div><div style="font-family:'Noto Serif Thai',serif;font-size:10px;line-height:1.6;color:#2A211C">Begin gently.<br>Nothing is behind you.</div><div style="font-size:5.5px;color:rgba(42,33,28,.4)">1 Sep</div></div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11.5px;font-weight:500">Dawn</span><span style="font-size:10px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:#8A7550">In use</span></div></div>
+              <div style="display:flex;flex-direction:column;gap:7px"><div style="width:100%;aspect-ratio:330/140;border-radius:14px;padding:13px 15px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(160deg,#CBD4C6 0%,#9AAE9C 100%);box-shadow:0 3px 14px rgba(28,25,23,.08)"><div style="font-size:5.5px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:rgba(30,42,32,.5)">Sage Field</div><div style="font-family:'Noto Serif Thai',serif;font-size:10px;line-height:1.6;color:#1E2A20">Steady is a pace,<br>not a personality.</div><div style="font-size:5.5px;color:rgba(30,42,32,.4)">1 Sep</div></div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11.5px;font-weight:500">Sage Field</span><span style="font-size:10px;color:rgba(28,25,23,.45)">Use</span></div></div>
+              <div style="display:flex;flex-direction:column;gap:7px"><div style="width:100%;aspect-ratio:330/140;border-radius:14px;padding:13px 15px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(155deg,#6B5C70 0%,#463B50 100%)"><div style="font-size:5.5px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:rgba(242,237,230,.55)">Dusk</div><div style="font-family:'Noto Serif Thai',serif;font-size:10px;line-height:1.6;color:#F2EDE6">Set it down. The day<br>is finished with you.</div><div style="font-size:5.5px;color:rgba(242,237,230,.45)">1 Sep</div></div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11.5px;font-weight:500">Dusk</span><span style="font-size:10px;color:rgba(28,25,23,.45)">Use</span></div></div>
+              <div style="display:flex;flex-direction:column;gap:7px"><div style="width:100%;aspect-ratio:330/140;border-radius:14px;padding:13px 15px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(150deg,#2B2627 0%,#151213 100%)"><div style="font-size:5.5px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:rgba(237,230,220,.5)">Onyx</div><div style="font-family:'Noto Serif Thai',serif;font-size:10px;line-height:1.6;color:#EDE6DC">You do not owe anyone<br>your restlessness.</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Widget gallery.</strong> The selling page. Live previews with today's real line, not sample art.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="margin-top:24px;display:flex;flex-direction:column;gap:6px">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:19px">Focus</div>
+              <div style="font-size:11px;line-height:1.6;color:rgba(28,25,23,.55)">Choose up to three. Your mornings draw from these.</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px">
+              <div style="padding:14px 14px;border-radius:14px;border:1px solid #C2A57B;background:#fff;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:#C2A57B"></div><div style="font-size:11.5px;font-weight:500">Calm mornings</div></div>
+              <div style="padding:14px 14px;border-radius:14px;background:#EDE6DC;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:rgba(28,25,23,.3)"></div><div style="font-size:11.5px;font-weight:500">Self-worth</div></div>
+              <div style="padding:14px 14px;border-radius:14px;border:1px solid #C2A57B;background:#fff;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:#C2A57B"></div><div style="font-size:11.5px;font-weight:500">Boundaries</div></div>
+              <div style="padding:14px 14px;border-radius:14px;background:#EDE6DC;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:rgba(28,25,23,.3)"></div><div style="font-size:11.5px;font-weight:500">Love</div></div>
+              <div style="padding:14px 14px;border-radius:14px;background:#EDE6DC;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:rgba(28,25,23,.3)"></div><div style="font-size:11.5px;font-weight:500">Focus at work</div></div>
+              <div style="padding:14px 14px;border-radius:14px;background:#EDE6DC;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:rgba(28,25,23,.3)"></div><div style="font-size:11.5px;font-weight:500">Gratitude</div></div>
+              <div style="padding:14px 14px;border-radius:14px;border:1px solid #C2A57B;background:#fff;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:#C2A57B"></div><div style="font-size:11.5px;font-weight:500">Rest</div></div>
+              <div style="padding:14px 14px;border-radius:14px;background:#EDE6DC;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:rgba(28,25,23,.3)"></div><div style="font-size:11.5px;font-weight:500">Healing</div></div>
+              <div style="padding:14px 14px;border-radius:14px;background:#EDE6DC;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:rgba(28,25,23,.3)"></div><div style="font-size:11.5px;font-weight:500">Courage</div></div>
+              <div style="padding:14px 14px;border-radius:14px;background:#EDE6DC;display:flex;flex-direction:column;gap:8px"><div style="width:5px;height:5px;border-radius:50%;background:rgba(28,25,23,.3)"></div><div style="font-size:11.5px;font-weight:500">Nights</div></div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="height:46px;border-radius:14px;background:#1C1917;color:#F2EDE6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500">Save · 3 chosen</div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(28,25,23,.25);margin:16px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Categories.</strong> Ten placeholders pending your names. Selection is a hairline, not a fill — colour stays scarce.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 0;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="margin-top:24px;display:flex;justify-content:space-between;align-items:baseline">
+              <div style="font-family:'Noto Serif Thai',serif;font-size:19px">Saved</div>
+              <div style="font-size:10px;color:rgba(28,25,23,.45)">12 lines</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:18px;overflow:hidden">
+              <div style="padding:18px 18px 14px;border-radius:14px;background:#fff;display:flex;flex-direction:column;gap:10px"><div style="font-family:'Noto Serif Thai',serif;font-size:13px;line-height:1.6;color:#1C1917">Begin gently. Nothing is behind you.</div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(28,25,23,.4)">Morning · 1 Sep</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8v11l-4-3-4 3v-11z" fill="#C2A57B"/></svg></div></div>
+              <div style="padding:18px 18px 14px;border-radius:14px;background:#fff;display:flex;flex-direction:column;gap:10px"><div style="font-family:'Noto Serif Thai',serif;font-size:13px;line-height:1.6;color:#1C1917">No is a complete sentence, said kindly.</div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(28,25,23,.4)">Boundaries · 29 Aug</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8v11l-4-3-4 3v-11z" fill="#C2A57B"/></svg></div></div>
+              <div style="padding:18px 18px 14px;border-radius:14px;background:#fff;display:flex;flex-direction:column;gap:10px"><div style="font-family:'Noto Serif Thai',serif;font-size:13px;line-height:1.6;color:#1C1917">You did enough today, even the parts no one saw.</div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(28,25,23,.4)">Night · 27 Aug</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8v11l-4-3-4 3v-11z" fill="#C2A57B"/></svg></div></div>
+              <div style="padding:18px 18px 14px;border-radius:14px;background:#fff;display:flex;flex-direction:column;gap:10px"><div style="font-family:'Noto Serif Thai',serif;font-size:13px;line-height:1.6;color:#1C1917">Rest is not the reward. It is part of the work.</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Saved.</strong> Plain reading list. Tap a line to reopen it full-screen in its theme.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="margin-top:24px;font-family:'Noto Serif Thai',serif;font-size:19px">Settings</div>
+            <div style="display:flex;flex-direction:column;margin-top:16px">
+              <div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(28,25,23,.4);padding:10px 0 8px">Daily line</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(28,25,23,.07)"><span style="font-size:12.5px">Arrives at</span><span style="font-size:12.5px;color:#8A7550;font-variant-numeric:tabular-nums">7:00</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(28,25,23,.07)"><span style="font-size:12.5px">Evening line</span><div style="width:32px;height:19px;border-radius:10px;background:#C2A57B;display:flex;align-items:center;justify-content:flex-end;padding:2px;box-sizing:border-box"><div style="width:15px;height:15px;border-radius:50%;background:#F7F4EF"></div></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(28,25,23,.07)"><span style="font-size:12.5px">Focus areas</span><span style="font-size:12.5px;color:rgba(28,25,23,.45)">3 chosen</span></div>
+              <div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(28,25,23,.4);padding:20px 0 8px">Appearance</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(28,25,23,.07)"><span style="font-size:12.5px">Theme</span><div style="display:flex;align-items:center;gap:7px"><div style="width:9px;height:9px;border-radius:50%;background:linear-gradient(140deg,#F5E7D8,#E6CBC0);box-shadow:0 0 0 1px rgba(28,25,23,.15)"></div><span style="font-size:12.5px;color:rgba(28,25,23,.45)">Dawn</span></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(28,25,23,.07)"><span style="font-size:12.5px">App appearance</span><span style="font-size:12.5px;color:rgba(28,25,23,.45)">System</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(28,25,23,.07)"><span style="font-size:12.5px">Language</span><span style="font-size:12.5px;color:rgba(28,25,23,.45)">English</span></div>
+              <div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(28,25,23,.4);padding:20px 0 8px">Account</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0"><span style="font-size:12.5px">Subscription</span><span style="font-size:12.5px;color:rgba(28,25,23,.45)">Yearly · trial</span></div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="text-align:center;font-size:9px;color:rgba(28,25,23,.3);padding-bottom:4px">ATTA 1.0 · Terms · Privacy</div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(28,25,23,.25);margin:10px auto 0"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Settings.</strong> Hairline rows, no icons, no cards. The one toggle is champagne.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#F7F4EF;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 24px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(28,25,23,.55)"><span>9:41</span><div style="width:11px;height:6px;border:1px solid rgba(28,25,23,.45);border-radius:2px"></div></div>
+            <div style="margin-top:24px;display:flex;justify-content:space-between;align-items:baseline"><div style="font-family:'Noto Serif Thai',serif;font-size:19px">Saved</div></div>
+            <div style="flex:1"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+              <svg width="22" height="22" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8v11l-4-3-4 3v-11z" stroke="rgba(28,25,23,.3)" stroke-width="1.1" stroke-linejoin="round"/></svg>
+              <div style="font-family:'Noto Serif Thai',serif;font-size:15px;line-height:1.6;color:rgba(28,25,23,.7);max-width:200px">Nothing kept yet.</div>
+              <div style="font-size:11px;line-height:1.7;color:rgba(28,25,23,.45);max-width:210px">When a line lands, save it here. The good ones are worth rereading.</div>
+            </div>
+            <div style="flex:1.4"></div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(28,25,23,.25);margin:0 auto"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Empty state.</strong> No illustration, no mascot. The outline bookmark and two quiet lines.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-radius:38px;padding:9px;background:#1C1917;box-shadow:0 20px 60px rgba(28,25,23,.13)">
+          <div style="border-radius:30px;overflow:hidden;background:#191517;aspect-ratio:9/19.2;display:flex;flex-direction:column;padding:18px 20px 20px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;color:rgba(242,237,230,.55)"><span></span><div style="width:11px;height:6px;border:1px solid rgba(242,237,230,.45);border-radius:2px"></div></div>
+            <div style="margin-top:44px;text-align:center;font-family:'Noto Serif Thai',serif;font-size:44px;font-weight:300;color:rgba(242,237,230,.9);line-height:1">7:00</div>
+            <div style="text-align:center;font-size:10px;color:rgba(242,237,230,.45);margin-top:8px">Monday, 1 September</div>
+            <div style="margin-top:36px;border-radius:16px;background:rgba(242,237,230,.1);padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
+              <div style="width:26px;height:26px;border-radius:8px;background:#F2EDE6;display:flex;align-items:center;justify-content:center;flex:none"><span style="font-family:'Noto Serif Thai',serif;font-size:11px;font-weight:600;letter-spacing:.5px;color:#1C1917">A</span></div>
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <div style="display:flex;justify-content:space-between;gap:12px"><span style="font-size:10.5px;font-weight:600;color:#F2EDE6">ATTA</span><span style="font-size:9px;color:rgba(242,237,230,.4)">now</span></div>
+                <div style="font-size:10.5px;font-weight:500;color:rgba(242,237,230,.9)">Your morning line is ready</div>
+                <div style="font-family:'Noto Serif Thai',serif;font-size:10.5px;line-height:1.55;color:rgba(242,237,230,.65)">"Begin gently. Nothing is behind you."</div>
+              </div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="width:34%;height:3px;border-radius:2px;background:rgba(242,237,230,.25);margin:0 auto"></div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:rgba(28,25,23,.6)"><strong style="font-weight:600;color:#1C1917">Notification.</strong> The line itself is the preview — the notification is the product, not a nudge to open it.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px;padding-top:4px">
+        <div style="background:#EDE6DC;border-radius:20px;padding:30px 32px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(28,25,23,.45)">Navigation model</div>
+          <div style="font-size:13.5px;line-height:1.75;color:rgba(28,25,23,.78);text-wrap:pretty">No tab bar. Home is the feed; the top-right dots open a sheet with Widgets, Focus, Saved, Settings. A five-item chrome under a meditation card would say "app" when the product wants to say "object".</div>
+        </div>
+        <div style="background:#fff;border-radius:20px;padding:30px 32px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(28,25,23,.45)">Loading state</div>
+          <div style="font-size:13.5px;line-height:1.75;color:rgba(28,25,23,.78)">Reuses the breathing ring from onboarding (§06), smaller and centered, with no copy. Never a spinner, never a skeleton shimmer.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="padding:88px 110px 0">
+    <div style="background:#EDE6DC;border-radius:20px;padding:36px 40px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(28,25,23,.45)">Still open</div>
+      <div style="font-size:14.5px;line-height:1.75;color:rgba(28,25,23,.78);max-width:900px;text-wrap:pretty">Your 15 affirmation lines, the tagline, and the ten category names — all placeholders here swap verbatim. Remaining from the brief: the icon set (§C-11), app icon, Play Store screenshots and feature graphic (§D). Say the word and I'll take any of these next, or make this flow clickable as an interactive prototype.</div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560}}"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ATTA</string>
+    <string name="widget_label">ATTA · Daily line</string>
+    <string name="widget_description">One quiet line, every morning, on your home screen.</string>
+</resources>
