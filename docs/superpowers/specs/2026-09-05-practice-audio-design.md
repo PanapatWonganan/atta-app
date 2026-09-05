@@ -67,6 +67,26 @@ swipe ends them. No new dependencies — framework media APIs only.
 - Quiet check-in: once a day when leaving practice — Calm / Okay / Heavy,
   one `mood_log` entry per date, a fortnight of dots. No streaks.
 
+## Launch-readiness pass (2026-09-06)
+
+- Content: `Affirmations.All` grew 15 → 105 hand-broken TH/EN lines across
+  all ten categories (repeat cycle ~2 weeks → ~3.5 months).
+- Accessibility: contentDescription on every icon-only control; AttaToggle
+  exposes Role.Switch. TalkBack can now drive the whole app.
+- Widget moment: onboarding ends on `WidgetMomentScreen` (live preview +
+  `requestPinAppWidget`). Fix along the way: NavHost startDestination is
+  frozen at first composition — a live one re-inflated the graph the moment
+  onboardingDone flipped and skipped the screen.
+- Deep links: widget tap and daily notifications carry `open_line`;
+  MainActivity opens that card.
+- Check-in history: eight-week dot grid in Settings; footer opens the new
+  in-app About (privacy/terms; no-analytics stance stated).
+- Free practice mood chip reads "Sound · Plus".
+- Billing: `billing/AttaBilling.kt` (Play Billing 7, products atta_weekly /
+  atta_yearly / atta_lifetime — create in Play Console). Paywall launches
+  real flows when Play is reachable; otherwise falls back to the local plan
+  (dev/emulator). Restore purchase wired.
+
 ## Testing
 
 Build, install on the emulator, drive into Practice, screenshot. English TTS
