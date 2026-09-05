@@ -1,7 +1,6 @@
 package com.atta.app.ui.screens
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -61,6 +60,7 @@ import com.atta.app.data.Plans
 import com.atta.app.data.WidgetTheme
 import com.atta.app.data.WidgetThemes
 import com.atta.app.notify.DailyLineScheduler
+import com.atta.app.share.ShareCard
 import com.atta.app.ui.components.BookmarkIcon
 import com.atta.app.ui.components.ChevronDownIcon
 import com.atta.app.ui.components.ChevronUpIcon
@@ -134,11 +134,11 @@ fun HomeScreen(
                     runCatching { AttaWidgetUpdater.updateAll(context) }
                 }
             },
-            onShare = { shareLine(context, line) },
+            onShare = { shareLine(context, theme, line) },
             onOpenThemes = { showThemes = true },
             onOpenMenu = { showMenu = true },
             showChevron = page < feed.lastIndex,
-            onOpenPractice = { onOpen("practice/$page") },
+            onOpenPractice = { onOpen("practice/feed/$page") },
         )
     }
 
@@ -171,12 +171,8 @@ fun HomeScreen(
     }
 }
 
-private fun shareLine(context: android.content.Context, line: String) {
-    val send = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, "“${line.replace("\n", " ")}” — ATTA")
-    }
-    context.startActivity(Intent.createChooser(send, null))
+private fun shareLine(context: android.content.Context, theme: WidgetTheme, line: String) {
+    ShareCard.share(context, theme, line)
 }
 
 /** One full-bleed affirmation card. Shared by the feed and the saved-line viewer. */
@@ -511,7 +507,7 @@ fun ViewerScreen(
         eyebrow = com.atta.app.data.Categories.name(affirmation.categoryId, settings.language),
         saved = affirmation.id in settings.savedIds,
         onToggleSave = { scope.launch { prefs.toggleSaved(affirmation.id) } },
-        onShare = { shareLine(context, line) },
+        onShare = { shareLine(context, theme, line) },
         onOpenThemes = null,
         onOpenMenu = null,
         showChevron = false,

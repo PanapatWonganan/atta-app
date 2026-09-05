@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,6 +28,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,12 +54,14 @@ import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.Categories
+import com.atta.app.data.CustomLines
 import com.atta.app.data.Plans
 import com.atta.app.data.WidgetThemes
 import com.atta.app.notify.DailyLineScheduler
 import com.atta.app.ui.components.AttaToggle
 import com.atta.app.ui.components.BookmarkIcon
 import com.atta.app.ui.components.Eyebrow
+import com.atta.app.ui.components.PlayIcon
 import com.atta.app.ui.components.PrimaryButton
 import com.atta.app.ui.components.ThemeDot
 import com.atta.app.ui.components.WidgetPreviewCard
@@ -300,10 +305,15 @@ fun SavedScreen(
     settings: AttaSettings,
     prefs: AttaPrefs,
     onOpenLine: (id: String) -> Unit,
+    onPractice: () -> Unit,
+    onRequireUpgrade: () -> Unit,
 ) {
     val colors = Atta.colors
     val scope = rememberCoroutineScope()
     val saved = Affirmations.All.filter { it.id in settings.savedIds }
+    val custom = CustomLines.parse(settings.customLines)
+    val freeTier = Plans.isFree(settings.plan)
+    var showEditor by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -324,15 +334,72 @@ fun SavedScreen(
                 style = AttaType.displaySm.copy(fontSize = 24.sp),
                 color = colors.ink,
             )
-            if (saved.isNotEmpty()) {
-                Text(
-                    text = if (saved.size == 1) "1 line" else "${saved.size} lines",
-                    style = AttaType.caption,
-                    color = colors.inkAlpha(0.45f),
-                )
+            if (saved.isNotEmpty() || custom.isNotEmpty()) {
+                // Listen to the whole list, your own lines first.
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(AttaDimens.RadiusChip))
+                        .clickable(onClick = onPractice)
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    PlayIcon(color = AttaPalette.ChampagneDeep, modifier = Modifier.size(10.dp))
+                    Text(
+                        text = "Listen",
+                        style = AttaType.label.copy(fontSize = 12.sp, letterSpacing = 0.3.sp),
+                        color = AttaPalette.ChampagneDeep,
+                    )
+                }
             }
         }
-        if (saved.isEmpty()) {
+        Text(
+            text = "+ Your own line",
+            style = AttaType.label.copy(fontSize = 13.sp, letterSpacing = 0.3.sp),
+            color = AttaPalette.ChampagneDeep,
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .clip(RoundedCornerShape(AttaDimens.RadiusChip))
+                .clickable { if (freeTier) onRequireUpgrade() else showEditor = true }
+                .padding(vertical = 8.dp, horizontal = 2.dp),
+        )
+        if (custom.isNotEmpty()) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                custom.forEach { line ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(AttaDimens.RadiusButton))
+                            .background(colors.card)
+                            .padding(start = 18.dp, end = 10.dp, top = 16.dp, bottom = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = line.text(settings.language).replace("\n", " "),
+                            style = AttaType.body.copy(
+                                fontFamily = AttaType.displaySm.fontFamily,
+                                fontSize = 16.sp,
+                                lineHeight = 26.sp,
+                            ),
+                            color = colors.ink,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Text(
+                            text = "✕",
+                            style = AttaType.caption,
+                            color = colors.inkAlpha(0.35f),
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable { scope.launch { prefs.removeCustomLine(line.id) } }
+                                .padding(10.dp),
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(6.dp))
+        }
+        if (saved.isEmpty() && custom.isEmpty()) {
             // No illustration, no mascot: the outline bookmark and two quiet lines.
             Column(
                 modifier = Modifier
@@ -415,6 +482,64 @@ fun SavedScreen(
                     }
                 }
             }
+        }
+    }
+
+    if (showEditor) {
+        CustomLineEditor(
+            onDismiss = { showEditor = false },
+            onSave = { text ->
+                showEditor = false
+                scope.launch {
+                    prefs.addCustomLine(CustomLines.encode(CustomLines.newId(), text))
+                }
+            },
+        )
+    }
+}
+
+/** One field, one button. Their words become part of the practice queue. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CustomLineEditor(
+    onDismiss: () -> Unit,
+    onSave: (text: String) -> Unit,
+) {
+    val colors = Atta.colors
+    var text by remember { mutableStateOf("") }
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = colors.canvas) {
+        Column(Modifier.padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Xs)) {
+            Text(
+                text = "Your own line",
+                style = AttaType.displaySm.copy(fontSize = 20.sp),
+                color = colors.ink,
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = "In your words. Read back to you each practice.",
+                style = AttaType.caption.copy(fontSize = 12.sp),
+                color = colors.inkAlpha(0.5f),
+            )
+            Spacer(Modifier.height(16.dp))
+            BasicTextField(
+                value = text,
+                onValueChange = { if (it.length <= 140) text = it },
+                textStyle = AttaType.displaySm.copy(fontSize = 19.sp, color = colors.ink),
+                cursorBrush = SolidColor(AttaPalette.Champagne),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 96.dp)
+                    .clip(RoundedCornerShape(AttaDimens.RadiusButton))
+                    .background(colors.card)
+                    .padding(18.dp),
+            )
+            Spacer(Modifier.height(18.dp))
+            PrimaryButton(
+                text = "Keep",
+                enabled = text.trim().isNotEmpty(),
+                onClick = { onSave(text.trim()) },
+            )
+            Spacer(Modifier.height(AttaDimens.Md))
         }
     }
 }

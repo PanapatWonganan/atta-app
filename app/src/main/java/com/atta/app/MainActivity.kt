@@ -133,10 +133,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         composable("home") {
             HomeScreen(prefs, settings) { route -> nav.navigate(route) }
         }
-        composable("practice/{index}") { entry ->
+        composable("practice/{source}/{index}") { entry ->
             PracticeScreen(
                 prefs = prefs,
                 settings = settings,
+                source = entry.arguments?.getString("source") ?: "feed",
                 startIndex = entry.arguments?.getString("index")?.toIntOrNull() ?: 0,
                 onClose = { nav.popBackStack() },
                 onRequireUpgrade = { nav.navigate("paywall/upgrade") },
@@ -149,7 +150,13 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
             FocusScreen(prefs, settings) { nav.popBackStack() }
         }
         composable("saved") {
-            SavedScreen(settings, prefs) { id -> nav.navigate("line/$id") }
+            SavedScreen(
+                settings = settings,
+                prefs = prefs,
+                onOpenLine = { id -> nav.navigate("line/$id") },
+                onPractice = { nav.navigate("practice/saved/0") },
+                onRequireUpgrade = { nav.navigate("paywall/upgrade") },
+            )
         }
         composable("settings") {
             SettingsScreen(

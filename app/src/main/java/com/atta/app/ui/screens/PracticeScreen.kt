@@ -1,7 +1,13 @@
 package com.atta.app.ui.screens
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -40,8 +46,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atta.app.audio.Moods
+import com.atta.app.audio.PracticeQueue
 import com.atta.app.audio.PracticeService
-import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.Plans
@@ -51,6 +57,7 @@ import com.atta.app.ui.components.PauseIcon
 import com.atta.app.ui.components.PlayIcon
 import com.atta.app.ui.theme.Atta
 import com.atta.app.ui.theme.AttaDimens
+import com.atta.app.ui.theme.AttaMotion
 import com.atta.app.ui.theme.AttaPalette
 import com.atta.app.ui.theme.AttaType
 import java.time.LocalDate
@@ -66,6 +73,7 @@ import kotlinx.coroutines.launch
 fun PracticeScreen(
     prefs: AttaPrefs,
     settings: AttaSettings,
+    source: String,
     startIndex: Int,
     onClose: () -> Unit,
     onRequireUpgrade: () -> Unit,
@@ -74,8 +82,8 @@ fun PracticeScreen(
     val scope = rememberCoroutineScope()
     val today = remember { LocalDate.now() }
     val eveningNow = remember { LocalTime.now().hour >= 18 }
-    val feed = remember(settings.focusIds) {
-        AffirmationRepository.feed(today, 30, settings.focusIds, eveningNow)
+    val feed = remember(settings.focusIds, settings.savedIds, settings.customLines, source) {
+        PracticeQueue.build(source, settings, today, eveningNow)
     }
     val theme = WidgetThemes.byId(
         if (Plans.isFree(settings.plan)) WidgetThemes.FreeThemeId else settings.themeId,
@@ -86,8 +94,18 @@ fun PracticeScreen(
 
     val playback by PracticeService.state.collectAsState()
     var showMoods by remember { mutableStateOf(false) }
+    var showCheckIn by remember { mutableStateOf(false) }
+    val todayKey = remember { today.toString() }
+    val loggedToday = settings.moodLog.any { it.substringBefore('|') == todayKey }
+    val close = {
+        if (loggedToday) onClose() else showCheckIn = true
+    }
 
-    LaunchedEffect(Unit) { PracticeService.start(context, startIndex) }
+    if (feed.isEmpty()) {
+        LaunchedEffect(Unit) { onClose() }
+        return
+    }
+    LaunchedEffect(Unit) { PracticeService.start(context, startIndex, source) }
 
     val index = playback.index.coerceIn(0, feed.lastIndex)
 
@@ -118,7 +136,7 @@ fun PracticeScreen(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
-                        .clickable(onClick = onClose),
+                        .clickable(onClick = close),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     ChevronDownIcon(
@@ -141,7 +159,32 @@ fun PracticeScreen(
                         color = theme.ink.copy(alpha = 0.75f),
                     )
                 }
-                Spacer(Modifier.size(44.dp))
+                // Sleep timer: taps cycle off → 5 → 10 → 15 minutes.
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            val next = when (playback.timerMinutes) {
+                                0 -> 5
+                                5 -> 10
+                                10 -> 15
+                                else -> 0
+                            }
+                            PracticeService.setTimer(context, next)
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = if (playback.timerMinutes == 0) "∞" else "${playback.timerMinutes}′",
+                        style = AttaType.label.copy(fontSize = 12.sp, letterSpacing = 0.sp),
+                        color = if (playback.timerMinutes == 0) {
+                            theme.ink.copy(alpha = 0.45f)
+                        } else {
+                            AttaPalette.Champagne
+                        },
+                    )
+                }
             }
             Spacer(Modifier.weight(1f))
             Crossfade(
@@ -150,13 +193,15 @@ fun PracticeScreen(
                 label = "practiceLine",
             ) { i ->
                 Text(
-                    text = feed[i].second.text(settings.language),
+                    text = feed[i].text(settings.language),
                     style = AttaType.displaySm,
                     color = theme.ink,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
+            Spacer(Modifier.height(34.dp))
+            BreathingRule(theme = theme, breathing = playback.playing)
             Spacer(Modifier.weight(1.2f))
             Row(horizontalArrangement = Arrangement.spacedBy(26.dp)) {
                 listOf("slow" to "SLOW", "normal" to "NORMAL").forEach { (id, label) ->
@@ -210,6 +255,21 @@ fun PracticeScreen(
         }
     }
 
+    if (showCheckIn) {
+        CheckInSheet(
+            moodLog = settings.moodLog,
+            today = today,
+            onDismiss = {
+                showCheckIn = false
+                onClose()
+            },
+            onPick = { value ->
+                showCheckIn = false
+                scope.launch { prefs.logMood(todayKey, value) }
+                onClose()
+            },
+        )
+    }
     if (showMoods) {
         MoodSheet(
             selectedId = mood.id,
@@ -224,6 +284,103 @@ fun PracticeScreen(
                 onRequireUpgrade()
             },
         )
+    }
+}
+
+/**
+ * The breath is the only motion on screen: a hairline that widens for 4s in
+ * and settles for 6s out (atta.motion.breath), matching a slow exhale-heavy
+ * rhythm. Paused practice holds it still.
+ */
+@Composable
+private fun BreathingRule(theme: com.atta.app.data.WidgetTheme, breathing: Boolean) {
+    val cycleMs = AttaMotion.BreathInMs + AttaMotion.BreathOutMs
+    val transition = rememberInfiniteTransition(label = "breath")
+    val phase by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(cycleMs, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "breathPhase",
+    )
+    val inFraction = AttaMotion.BreathInMs.toFloat() / cycleMs
+    val breath = if (!breathing) {
+        0f
+    } else if (phase < inFraction) {
+        AttaMotion.EaseInOut.transform(phase / inFraction)
+    } else {
+        1f - AttaMotion.EaseInOut.transform((phase - inFraction) / (1f - inFraction))
+    }
+    Box(
+        Modifier
+            .height(1.dp)
+            .size(width = (26 + 34 * breath).dp, height = 1.dp)
+            .background(theme.ink.copy(alpha = 0.25f + 0.3f * breath)),
+    )
+}
+
+/**
+ * The quiet check-in shown once a day when leaving practice: one tap, three
+ * words, and a fortnight of small dots. No streaks, no numbers.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CheckInSheet(
+    moodLog: Set<String>,
+    today: LocalDate,
+    onDismiss: () -> Unit,
+    onPick: (value: String) -> Unit,
+) {
+    val colors = Atta.colors
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = colors.canvas) {
+        Column(Modifier.padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Xs)) {
+            Text(
+                text = "How do you feel?",
+                style = AttaType.displaySm.copy(fontSize = 20.sp),
+                color = colors.ink,
+                modifier = Modifier.padding(bottom = 10.dp),
+            )
+            listOf("calm" to "Calm", "okay" to "Okay", "heavy" to "Heavy").forEach { (key, label) ->
+                Text(
+                    text = label,
+                    style = AttaType.displaySm.copy(fontSize = 19.sp, lineHeight = 30.sp),
+                    color = colors.ink,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(AttaDimens.RadiusChip))
+                        .clickable { onPick(key) }
+                        .padding(vertical = 13.dp, horizontal = 4.dp),
+                )
+            }
+            Spacer(Modifier.height(18.dp))
+            Row(
+                modifier = Modifier.padding(horizontal = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(9.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                (13 downTo 0).forEach { back ->
+                    val date = today.minusDays(back.toLong()).toString()
+                    val value = moodLog.firstOrNull { it.substringBefore('|') == date }
+                        ?.substringAfter('|')
+                    Box(
+                        Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(
+                                when (value) {
+                                    "calm" -> AttaPalette.Champagne
+                                    "okay" -> colors.inkAlpha(0.3f)
+                                    "heavy" -> colors.inkAlpha(0.65f)
+                                    else -> colors.inkAlpha(0.08f)
+                                },
+                            ),
+                    )
+                }
+            }
+            Spacer(Modifier.height(AttaDimens.Md))
+        }
     }
 }
 

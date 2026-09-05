@@ -41,6 +41,8 @@ data class PracticeState(
     val playing: Boolean = false,
     val index: Int = 0,
     val voiceUnavailable: Boolean = false,
+    val source: String = PracticeQueue.SourceFeed,
+    val timerMinutes: Int = 0, // 0 = no sleep timer
 )
 
 /**
@@ -56,8 +58,10 @@ class PracticeService : Service() {
     private var voice: PracticeVoice? = null
     private var voiceState = PracticeVoice.State.Loading
     private var settings: AttaSettings? = null
-    private var feed: List<Pair<LocalDate, Affirmation>> = emptyList()
+    private var feed: List<Affirmation> = emptyList()
     private var loopJob: Job? = null
+    private var timerJob: Job? = null
+    private var endPending = false
     private var session: MediaSession? = null
     private var focusRequest: AudioFocusRequest? = null
 
@@ -95,8 +99,12 @@ class PracticeService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ActionStart -> begin(intent.getIntExtra(ExtraIndex, 0))
+            ActionStart -> begin(
+                intent.getIntExtra(ExtraIndex, 0),
+                intent.getStringExtra(ExtraSource) ?: PracticeQueue.SourceFeed,
+            )
             ActionToggle -> if (_state.value.playing) pause() else resume()
+            ActionTimer -> setTimerMinutes(intent.getIntExtra(ExtraMinutes, 0))
             ActionStop -> end()
         }
         return START_NOT_STICKY
@@ -116,15 +124,18 @@ class PracticeService : Service() {
     }
 
     /** Start fresh, or jump the running session to another card's line. */
-    private fun begin(startIndex: Int) {
+    private fun begin(startIndex: Int, source: String) {
         startForeground(NotificationId, buildNotification("Practice"))
         scope.launch {
             if (settings == null) settings = prefs.snapshot()
             val current = settings ?: return@launch
+            if (feed.isEmpty() || source != _state.value.source) {
+                feed = PracticeQueue.build(source, current, LocalDate.now(), LocalTime.now().hour >= 18)
+                _state.update { it.copy(source = source) }
+            }
             if (feed.isEmpty()) {
-                feed = AffirmationRepository.feed(
-                    LocalDate.now(), 30, current.focusIds, LocalTime.now().hour >= 18,
-                )
+                end()
+                return@launch
             }
             if (voice == null) {
                 voice = PracticeVoice(this@PracticeService, current.language) { newState ->
@@ -168,11 +179,34 @@ class PracticeService : Service() {
 
     private fun end() {
         loopJob?.cancel()
+        timerJob?.cancel()
+        endPending = false
         voice?.stop()
         moodPlayer.stop()
         stopForeground(STOP_FOREGROUND_REMOVE)
         _state.value = PracticeState()
         stopSelf()
+    }
+
+    /** Sleep timer: wall-clock; when it fires the mood fades and the session
+     * ends after the line being read. 0 clears it. */
+    private fun setTimerMinutes(minutes: Int) {
+        timerJob?.cancel()
+        endPending = false
+        _state.update { it.copy(timerMinutes = minutes) }
+        if (minutes <= 0) return
+        timerJob = scope.launch {
+            delay(minutes * 60_000L)
+            if (_state.value.playing) {
+                endPending = true
+                repeat(FadeSteps) { step ->
+                    moodPlayer.setLevel(1f - (step + 1f) / FadeSteps)
+                    delay(FadeStepMs)
+                }
+            } else {
+                end()
+            }
+        }
     }
 
     private fun runLoop() {
@@ -183,7 +217,7 @@ class PracticeService : Service() {
                 val current = settings ?: break
                 val entry = feed.getOrNull(_state.value.index) ?: break
                 updateSession()
-                notify(buildNotification(entry.second.text(current.language)))
+                notify(buildNotification(entry.text(current.language)))
                 when (voiceState) {
                     PracticeVoice.State.Loading -> {
                         delay(400)
@@ -192,12 +226,16 @@ class PracticeService : Service() {
                     PracticeVoice.State.Ready -> {
                         delay(700)
                         voice?.speak(
-                            entry.second.text(current.language),
+                            entry.text(current.language),
                             current.practicePace != "normal",
                         )
                         delay(LineGapMs)
                     }
                     PracticeVoice.State.Unavailable -> delay(SilentLineMs)
+                }
+                if (endPending) {
+                    end()
+                    break
                 }
                 _state.update { it.copy(index = (it.index + 1) % feed.size) }
             }
@@ -212,7 +250,7 @@ class PracticeService : Service() {
 
     private fun currentLine(): String {
         val current = settings ?: return "Practice"
-        return feed.getOrNull(_state.value.index)?.second?.text(current.language) ?: "Practice"
+        return feed.getOrNull(_state.value.index)?.text(current.language) ?: "Practice"
     }
 
     private fun requestFocus() {
@@ -329,26 +367,40 @@ class PracticeService : Service() {
         private const val NotificationId = 3
         private const val ActionStart = "com.atta.app.practice.START"
         private const val ActionToggle = "com.atta.app.practice.TOGGLE"
+        private const val ActionTimer = "com.atta.app.practice.TIMER"
         private const val ActionStop = "com.atta.app.practice.STOP"
         private const val ExtraIndex = "index"
+        private const val ExtraSource = "source"
+        private const val ExtraMinutes = "minutes"
         private const val LineGapMs = 4_000L
         private const val SilentLineMs = 9_000L
+        private const val FadeSteps = 12
+        private const val FadeStepMs = 400L
 
         private val _state = MutableStateFlow(PracticeState())
         val state: StateFlow<PracticeState> = _state
 
-        /** Starts practice at a card, or jumps the running session there. */
-        fun start(context: Context, index: Int) {
+        /** Starts practice at a queue position, or jumps the running session there. */
+        fun start(context: Context, index: Int, source: String = PracticeQueue.SourceFeed) {
             context.startForegroundService(
                 Intent(context, PracticeService::class.java)
                     .setAction(ActionStart)
-                    .putExtra(ExtraIndex, index),
+                    .putExtra(ExtraIndex, index)
+                    .putExtra(ExtraSource, source),
             )
         }
 
         fun toggle(context: Context) {
             context.startService(
                 Intent(context, PracticeService::class.java).setAction(ActionToggle),
+            )
+        }
+
+        fun setTimer(context: Context, minutes: Int) {
+            context.startService(
+                Intent(context, PracticeService::class.java)
+                    .setAction(ActionTimer)
+                    .putExtra(ExtraMinutes, minutes),
             )
         }
     }

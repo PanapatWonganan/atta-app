@@ -29,10 +29,16 @@ class MoodPlayer(private val context: Context) {
         stop()
         player = MediaPlayer.create(context, res)?.apply {
             isLooping = true
-            setVolume(0.3f, 0.3f)
+            setVolume(BedVolume, BedVolume)
             start()
         }
         currentRes = res
+    }
+
+    /** 0..1 of the bed's own level — the sleep-timer fade walks this down. */
+    fun setLevel(fraction: Float) {
+        val v = BedVolume * fraction.coerceIn(0f, 1f)
+        player?.setVolume(v, v)
     }
 
     fun stop() {
@@ -42,5 +48,9 @@ class MoodPlayer(private val context: Context) {
         }
         player = null
         currentRes = null
+    }
+
+    private companion object {
+        const val BedVolume = 0.3f
     }
 }

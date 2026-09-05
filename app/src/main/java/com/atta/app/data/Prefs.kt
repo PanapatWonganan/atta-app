@@ -45,6 +45,8 @@ data class AttaSettings(
     val language: String = "en", // en | th
     val practiceMood: String = "calm", // none | calm | rain | waves
     val practicePace: String = "slow", // slow | normal
+    val customLines: Set<String> = emptySet(), // "<id>\u0001<text>" — see CustomLines
+    val moodLog: Set<String> = emptySet(), // "<yyyy-MM-dd>|<calm|okay|heavy>", one per day
 )
 
 private object Keys {
@@ -60,6 +62,8 @@ private object Keys {
     val Language = stringPreferencesKey("language")
     val PracticeMood = stringPreferencesKey("practice_mood")
     val PracticePace = stringPreferencesKey("practice_pace")
+    val CustomLines = stringSetPreferencesKey("custom_lines")
+    val MoodLog = stringSetPreferencesKey("mood_log")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -75,6 +79,8 @@ private fun Preferences.toSettings() = AttaSettings(
     language = this[Keys.Language] ?: "en",
     practiceMood = this[Keys.PracticeMood] ?: "calm",
     practicePace = this[Keys.PracticePace] ?: "slow",
+    customLines = this[Keys.CustomLines] ?: emptySet(),
+    moodLog = this[Keys.MoodLog] ?: emptySet(),
 )
 
 class AttaPrefs(private val context: Context) {
@@ -119,4 +125,19 @@ class AttaPrefs(private val context: Context) {
 
     suspend fun setPracticePace(value: String) =
         context.attaDataStore.edit { it[Keys.PracticePace] = value }
+
+    suspend fun addCustomLine(entry: String) = context.attaDataStore.edit {
+        it[Keys.CustomLines] = (it[Keys.CustomLines] ?: emptySet()) + entry
+    }
+
+    suspend fun removeCustomLine(id: String) = context.attaDataStore.edit {
+        it[Keys.CustomLines] = (it[Keys.CustomLines] ?: emptySet())
+            .filterNot { entry -> entry.substringBefore('\u0001') == id }.toSet()
+    }
+
+    /** One entry per day: relogging a day replaces its value. */
+    suspend fun logMood(date: String, value: String) = context.attaDataStore.edit {
+        it[Keys.MoodLog] = (it[Keys.MoodLog] ?: emptySet())
+            .filterNot { entry -> entry.substringBefore('|') == date }.toSet() + "$date|$value"
+    }
 }
