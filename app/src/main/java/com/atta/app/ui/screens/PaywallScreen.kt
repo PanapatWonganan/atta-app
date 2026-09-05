@@ -68,6 +68,7 @@ private val PlanOptions = listOf(
 fun PaywallScreen(
     onNotNow: () -> Unit,
     onSubscribe: (planId: String) -> Unit,
+    onRestore: () -> Unit = {},
 ) {
     val colors = Atta.colors
     var selected by remember { mutableStateOf(Plans.TrialYearly) }
@@ -148,7 +149,15 @@ fun PaywallScreen(
             style = AttaType.caption.copy(fontSize = 10.5.sp),
             color = colors.inkAlpha(0.45f),
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AttaDimens.RadiusChip))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onRestore,
+                )
+                .padding(vertical = 4.dp),
         )
     }
 }

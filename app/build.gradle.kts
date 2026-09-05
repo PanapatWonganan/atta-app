@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.billing.ktx)
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.ui.tooling)
 }

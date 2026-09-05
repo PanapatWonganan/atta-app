@@ -1,5 +1,6 @@
 package com.atta.app
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.atta.app.billing.AttaBilling
 import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
@@ -86,6 +89,30 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    val billing = remember { AttaBilling(context.applicationContext) }
+    val billingReady by billing.ready.collectAsState()
+    LaunchedEffect(Unit) { billing.connect() }
+    DisposableEffect(Unit) { onDispose { billing.release() } }
+
+    // Play purchases land here: persist the plan, then close any open paywall
+    // the same way a local subscribe would have.
+    LaunchedEffect(Unit) {
+        billing.purchasedPlan.collect { plan ->
+            if (plan == null) return@collect
+            prefs.setPlan(plan)
+            runCatching { AttaWidgetUpdater.updateAll(context) }
+            val entry = nav.currentBackStackEntry
+            if (entry?.destination?.route?.startsWith("paywall") == true) {
+                if (entry.arguments?.getString("source") == "onboarding") {
+                    prefs.setOnboardingDone()
+                    nav.navigate("widgetmoment") { popUpTo(0) { inclusive = true } }
+                } else {
+                    nav.popBackStack()
+                }
+            }
+        }
+    }
+
     // Widget and daily-notification taps land on that line, not just the app.
     LaunchedEffect(Unit) {
         val activity = context as? ComponentActivity ?: return@LaunchedEffect
@@ -96,9 +123,15 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         }
     }
 
+    // Frozen at first composition: onboardingDone flips true mid-flow (at the
+    // paywall) and a live startDestination would yank the graph to home,
+    // skipping the widget moment.
+    val startDestination = remember {
+        if (settings.onboardingDone) "home" else "welcome"
+    }
     NavHost(
         navController = nav,
-        startDestination = if (settings.onboardingDone) "home" else "welcome",
+        startDestination = startDestination,
         enterTransition = { fadeIn(tween(AttaMotion.ScreenEnterMs, easing = AttaMotion.EaseInOut)) },
         exitTransition = { fadeOut(tween(AttaMotion.ScreenEnterMs, easing = AttaMotion.EaseInOut)) },
         popEnterTransition = { fadeIn(tween(AttaMotion.ScreenEnterMs, easing = AttaMotion.EaseInOut)) },
@@ -140,7 +173,16 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
             }
             PaywallScreen(
                 onNotNow = { close(if (Plans.isFree(settings.plan)) Plans.Free else null) },
-                onSubscribe = { close(it) },
+                onSubscribe = { planId ->
+                    val activity = context as? Activity
+                    if (billingReady && activity != null) {
+                        billing.launchPurchase(activity, planId)
+                    } else {
+                        // No Play on this device/build: keep the local dev path.
+                        close(planId)
+                    }
+                },
+                onRestore = { billing.restore() },
             )
         }
         composable("widgetmoment") {
