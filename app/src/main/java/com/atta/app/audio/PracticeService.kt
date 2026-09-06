@@ -91,7 +91,25 @@ class PracticeService : Service() {
         }
         scope.launch {
             prefs.settings.collect { latest ->
+                val previous = settings
                 settings = latest
+                // The queue's inputs changed mid-session: rebuild it so the
+                // voice never keeps reading a stale list.
+                if (_state.value.active && previous != null && (
+                        previous.focusIds != latest.focusIds ||
+                            previous.savedIds != latest.savedIds ||
+                            previous.customLines != latest.customLines
+                        )
+                ) {
+                    feed = PracticeQueue.build(
+                        _state.value.source, latest, LocalDate.now(), LocalTime.now().hour >= 18,
+                    )
+                    if (feed.isEmpty()) {
+                        end()
+                        return@collect
+                    }
+                    _state.update { it.copy(index = it.index.coerceIn(0, feed.lastIndex)) }
+                }
                 if (_state.value.playing) applyMood()
             }
         }
@@ -125,14 +143,18 @@ class PracticeService : Service() {
 
     /** Start fresh, or jump the running session to another card's line. */
     private fun begin(startIndex: Int, source: String) {
+        // Silence the old reading immediately — a switch must never let the
+        // previous queue slip in one more line while the new one spins up.
+        loopJob?.cancel()
+        voice?.stop()
         startForeground(NotificationId, buildNotification("Practice"))
         scope.launch {
             if (settings == null) settings = prefs.snapshot()
             val current = settings ?: return@launch
-            if (feed.isEmpty() || source != _state.value.source) {
-                feed = PracticeQueue.build(source, current, LocalDate.now(), LocalTime.now().hour >= 18)
-                _state.update { it.copy(source = source) }
-            }
+            // Always rebuild: focus, saved, and custom lines may have changed
+            // since the queue was last cached.
+            feed = PracticeQueue.build(source, current, LocalDate.now(), LocalTime.now().hour >= 18)
+            _state.update { it.copy(source = source) }
             if (feed.isEmpty()) {
                 end()
                 return@launch
