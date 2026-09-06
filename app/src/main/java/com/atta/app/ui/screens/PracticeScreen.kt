@@ -55,6 +55,7 @@ import com.atta.app.audio.PracticeService
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.WidgetThemes
+import com.atta.app.review.ReviewPrompter
 import com.atta.app.ui.components.ChevronDownIcon
 import com.atta.app.ui.components.ChevronUpIcon
 import com.atta.app.ui.components.PauseIcon
@@ -309,7 +310,16 @@ fun PracticeScreen(
             },
             onPick = { value ->
                 showCheckIn = false
-                scope.launch { prefs.logMood(todayKey, value) }
+                scope.launch {
+                    prefs.logMood(todayKey, value)
+                    // They just told us they feel calm — the happiest moment
+                    // this app has; ReviewPrompter rate-limits itself.
+                    if (value == "calm") {
+                        (context as? android.app.Activity)?.let {
+                            ReviewPrompter.maybeAsk(it, prefs)
+                        }
+                    }
+                }
                 onClose()
             },
         )

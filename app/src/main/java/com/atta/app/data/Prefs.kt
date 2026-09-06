@@ -49,6 +49,9 @@ data class AttaSettings(
     val customLines: Set<String> = emptySet(), // "<id>\u0001<text>" — see CustomLines
     val moodLog: Set<String> = emptySet(), // "<yyyy-MM-dd>|<calm|okay|heavy>", one per day
     val plusPassUntil: Long = 0L, // epoch ms; rewarded-ad day pass expiry
+    val usageDays: Set<String> = emptySet(), // distinct "yyyy-MM-dd" the app was opened
+    val reviewLastAskMs: Long = 0L,
+    val reviewAskCount: Int = 0,
 ) {
     /** Free means no paid plan AND no live ad-earned day pass. */
     val freeTier: Boolean
@@ -71,6 +74,9 @@ private object Keys {
     val CustomLines = stringSetPreferencesKey("custom_lines")
     val MoodLog = stringSetPreferencesKey("mood_log")
     val PlusPassUntil = longPreferencesKey("plus_pass_until")
+    val UsageDays = stringSetPreferencesKey("usage_days")
+    val ReviewLastAsk = longPreferencesKey("review_last_ask")
+    val ReviewAskCount = intPreferencesKey("review_ask_count")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -89,6 +95,9 @@ private fun Preferences.toSettings() = AttaSettings(
     customLines = this[Keys.CustomLines] ?: emptySet(),
     moodLog = this[Keys.MoodLog] ?: emptySet(),
     plusPassUntil = this[Keys.PlusPassUntil] ?: 0L,
+    usageDays = this[Keys.UsageDays] ?: emptySet(),
+    reviewLastAskMs = this[Keys.ReviewLastAsk] ?: 0L,
+    reviewAskCount = this[Keys.ReviewAskCount] ?: 0,
 )
 
 class AttaPrefs(private val context: Context) {
@@ -145,6 +154,17 @@ class AttaPrefs(private val context: Context) {
 
     suspend fun setPlusPassUntil(epochMs: Long) =
         context.attaDataStore.edit { it[Keys.PlusPassUntil] = epochMs }
+
+    /** One entry per distinct day; keeps only the most recent 60. */
+    suspend fun recordUsageDay(date: String) = context.attaDataStore.edit {
+        val days = (it[Keys.UsageDays] ?: emptySet()) + date
+        it[Keys.UsageDays] = days.sortedDescending().take(60).toSet()
+    }
+
+    suspend fun recordReviewAsk(nowMs: Long) = context.attaDataStore.edit {
+        it[Keys.ReviewLastAsk] = nowMs
+        it[Keys.ReviewAskCount] = (it[Keys.ReviewAskCount] ?: 0) + 1
+    }
 
     /** One entry per day: relogging a day replaces its value. */
     suspend fun logMood(date: String, value: String) = context.attaDataStore.edit {

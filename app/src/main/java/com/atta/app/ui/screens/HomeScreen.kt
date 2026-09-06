@@ -65,6 +65,7 @@ import com.atta.app.data.AttaSettings
 import com.atta.app.data.WidgetTheme
 import com.atta.app.data.WidgetThemes
 import com.atta.app.notify.DailyLineScheduler
+import com.atta.app.review.ReviewPrompter
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.atta.app.share.ShareCard
@@ -135,6 +136,7 @@ fun HomeScreen(
     LaunchedEffect(settings.morningHour, settings.morningMinute, settings.eveningLine) {
         DailyLineScheduler.schedule(context)
     }
+    LaunchedEffect(Unit) { prefs.recordUsageDay(today.toString()) }
 
     // While practice reads the feed aloud, the screen and the voice stay on
     // the same card: the pager follows the line being read, and a manual
@@ -180,9 +182,18 @@ fun HomeScreen(
                 eyebrow = eyebrow,
                 saved = affirmation.id in settings.savedIds,
                 onToggleSave = {
+                    val isThirdSave = affirmation.id !in settings.savedIds &&
+                        settings.savedIds.size == 2
                     scope.launch {
                         prefs.toggleSaved(affirmation.id)
                         runCatching { AttaWidgetUpdater.updateAll(context) }
+                        // Third kept line = the content landed; a good moment
+                        // to ask for a review (rate-limited inside).
+                        if (isThirdSave) {
+                            (context as? android.app.Activity)?.let {
+                                ReviewPrompter.maybeAsk(it, prefs)
+                            }
+                        }
                     }
                 },
                 onShare = { shareLine(context, theme, line) },
