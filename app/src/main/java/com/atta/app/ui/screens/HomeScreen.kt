@@ -51,7 +51,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.snapshotFlow
 import androidx.core.content.ContextCompat
+import com.atta.app.audio.PracticeQueue
+import com.atta.app.audio.PracticeService
 import com.atta.app.data.Affirmation
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
@@ -116,6 +120,32 @@ fun HomeScreen(
     }
     LaunchedEffect(settings.morningHour, settings.morningMinute, settings.eveningLine) {
         DailyLineScheduler.schedule(context)
+    }
+
+    // While practice reads the feed aloud, the screen and the voice stay on
+    // the same card: the pager follows the line being read, and a manual
+    // swipe jumps the reading to the visible card. (index == page is the
+    // no-op guard that keeps the two effects from chasing each other.)
+    val playback by PracticeService.state.collectAsState()
+    LaunchedEffect(playback.index, playback.active, playback.playing) {
+        if (playback.active && playback.playing &&
+            playback.source == PracticeQueue.SourceFeed &&
+            playback.index in feed.indices &&
+            pagerState.currentPage != playback.index
+        ) {
+            pagerState.animateScrollToPage(playback.index)
+        }
+    }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }.collect { page ->
+            val reading = PracticeService.state.value
+            if (reading.active && reading.playing &&
+                reading.source == PracticeQueue.SourceFeed &&
+                reading.index != page
+            ) {
+                PracticeService.start(context, page, PracticeQueue.SourceFeed)
+            }
+        }
     }
 
     VerticalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
