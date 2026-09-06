@@ -39,6 +39,11 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
         .build()
 
     fun connect() {
+        // Testing switch: while true, Play is never marked ready, so the
+        // paywall unlocks plans locally (free) even on devices that have the
+        // Play Store. Flip to false once the three products exist in Play
+        // Console and the app ships through Play.
+        if (LocalTestingMode) return
         if (client.isReady) return
         client.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
@@ -141,10 +146,13 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
         else -> null
     }
 
-    private companion object {
+    companion object {
+        /** TEMPORARY: local plans for testing. Set false for the Play release. */
+        const val LocalTestingMode = true
+
         // Product ids to create in Play Console before release.
-        const val WeeklyProduct = "atta_weekly"
-        const val YearlyProduct = "atta_yearly"
-        const val LifetimeProduct = "atta_lifetime"
+        private const val WeeklyProduct = "atta_weekly"
+        private const val YearlyProduct = "atta_yearly"
+        private const val LifetimeProduct = "atta_lifetime"
     }
 }
