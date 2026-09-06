@@ -62,6 +62,7 @@ class PracticeService : Service() {
     private var loopJob: Job? = null
     private var timerJob: Job? = null
     private var endPending = false
+    private var silentLines = 0
     private var session: MediaSession? = null
     private var focusRequest: AudioFocusRequest? = null
 
@@ -137,14 +138,7 @@ class PracticeService : Service() {
                 end()
                 return@launch
             }
-            if (voice == null) {
-                voice = PracticeVoice(this@PracticeService, current.language) { newState ->
-                    voiceState = newState
-                    _state.update {
-                        it.copy(voiceUnavailable = newState == PracticeVoice.State.Unavailable)
-                    }
-                }
-            }
+            if (voice == null) createVoice(current.language)
             _state.update {
                 it.copy(
                     active = true,
@@ -236,13 +230,35 @@ class PracticeService : Service() {
                             )
                             delay(LineGapMs)
                         }
-                    PracticeVoice.State.Unavailable -> delay(SilentLineMs)
+                    // Engines die mid-utterance and restart on their own; keep
+                    // the rhythm in silence but try a fresh connection every
+                    // couple of lines instead of staying mute forever.
+                    PracticeVoice.State.Unavailable -> {
+                        delay(SilentLineMs)
+                        silentLines++
+                        if (silentLines % 2 == 0) {
+                            voice?.shutdown()
+                            voice = null
+                            createVoice(current.language)
+                        }
+                    }
                 }
                 if (endPending) {
                     end()
                     break
                 }
                 _state.update { it.copy(index = (it.index + 1) % feed.size) }
+            }
+        }
+    }
+
+    private fun createVoice(language: String) {
+        voiceState = PracticeVoice.State.Loading
+        voice = PracticeVoice(this, language) { newState ->
+            voiceState = newState
+            if (newState == PracticeVoice.State.Ready) silentLines = 0
+            _state.update {
+                it.copy(voiceUnavailable = newState == PracticeVoice.State.Unavailable)
             }
         }
     }
