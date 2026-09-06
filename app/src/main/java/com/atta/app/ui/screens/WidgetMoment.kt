@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaSettings
-import com.atta.app.data.Plans
 import com.atta.app.data.WidgetThemes
 import com.atta.app.ui.components.Eyebrow
 import com.atta.app.ui.components.PrimaryButton
@@ -52,7 +51,7 @@ fun WidgetMomentScreen(
     val line = AffirmationRepository.lineFor(today, settings.focusIds).text(settings.language)
     val date = AffirmationRepository.shortDate(today, settings.language)
     val theme = WidgetThemes.byId(
-        if (Plans.isFree(settings.plan)) WidgetThemes.FreeThemeId else settings.themeId,
+        if (settings.freeTier) WidgetThemes.FreeThemeId else settings.themeId,
     )
     val widgetManager = AppWidgetManager.getInstance(context)
     val canPin = widgetManager.isRequestPinAppWidgetSupported

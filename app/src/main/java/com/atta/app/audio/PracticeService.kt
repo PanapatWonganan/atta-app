@@ -20,7 +20,6 @@ import com.atta.app.data.Affirmation
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
-import com.atta.app.data.Plans
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlinx.coroutines.CoroutineScope
@@ -265,7 +264,7 @@ class PracticeService : Service() {
 
     private fun applyMood() {
         val current = settings ?: return
-        val mood = if (Plans.isFree(current.plan)) Moods.None else Moods.byId(current.practiceMood)
+        val mood = if (current.freeTier) Moods.None else Moods.byId(current.practiceMood)
         if (_state.value.playing) moodPlayer.play(mood) else moodPlayer.stop()
     }
 

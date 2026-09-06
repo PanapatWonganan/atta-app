@@ -21,7 +21,6 @@ import androidx.glance.layout.fillMaxSize
 import com.atta.app.MainActivity
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
-import com.atta.app.data.Plans
 import com.atta.app.data.WidgetThemes
 import java.time.LocalDate
 import java.time.LocalTime
@@ -46,7 +45,7 @@ class AttaWidget : GlanceAppWidget() {
         val line = affirmation.text(settings.language)
         val date = AffirmationRepository.shortDate(today, settings.language)
         val theme = WidgetThemes.byId(
-            if (Plans.isFree(settings.plan)) WidgetThemes.FreeThemeId else settings.themeId,
+            if (settings.freeTier) WidgetThemes.FreeThemeId else settings.themeId,
         )
 
         provideContent {

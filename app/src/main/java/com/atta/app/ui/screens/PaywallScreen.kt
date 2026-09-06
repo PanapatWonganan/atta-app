@@ -69,6 +69,8 @@ fun PaywallScreen(
     onNotNow: () -> Unit,
     onSubscribe: (planId: String) -> Unit,
     onRestore: () -> Unit = {},
+    adReady: Boolean = false,
+    onWatchAd: () -> Unit = {},
 ) {
     val colors = Atta.colors
     var selected by remember { mutableStateOf(Plans.TrialYearly) }
@@ -143,6 +145,21 @@ fun PaywallScreen(
             text = if (selected == Plans.Lifetime) "Unlock lifetime" else "Start my 7 days free",
             onClick = { onSubscribe(selected) },
         )
+        if (adReady) {
+            // The no-money path: one short ad buys a full day of Plus.
+            Text(
+                text = "or watch a short ad — Plus free for 24 hours",
+                style = AttaType.label.copy(fontSize = 12.5.sp, letterSpacing = 0.3.sp),
+                color = AttaPalette.ChampagneDeep,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .clip(RoundedCornerShape(AttaDimens.RadiusChip))
+                    .clickable(onClick = onWatchAd)
+                    .padding(vertical = 10.dp),
+            )
+        }
         Spacer(Modifier.height(10.dp))
         Text(
             text = "Cancel anytime in two taps · Restore purchase",

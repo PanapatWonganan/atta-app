@@ -54,7 +54,6 @@ import com.atta.app.audio.PracticeQueue
 import com.atta.app.audio.PracticeService
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
-import com.atta.app.data.Plans
 import com.atta.app.data.WidgetThemes
 import com.atta.app.ui.components.ChevronDownIcon
 import com.atta.app.ui.components.ChevronUpIcon
@@ -91,9 +90,9 @@ fun PracticeScreen(
         PracticeQueue.build(source, settings, today, eveningNow)
     }
     val theme = WidgetThemes.byId(
-        if (Plans.isFree(settings.plan)) WidgetThemes.FreeThemeId else settings.themeId,
+        if (settings.freeTier) WidgetThemes.FreeThemeId else settings.themeId,
     )
-    val freeTier = Plans.isFree(settings.plan)
+    val freeTier = settings.freeTier
     val mood = if (freeTier) Moods.None else Moods.byId(settings.practiceMood)
 
     val playback by PracticeService.state.collectAsState()

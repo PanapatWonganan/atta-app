@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -47,7 +48,12 @@ data class AttaSettings(
     val practicePace: String = "slow", // slow | normal
     val customLines: Set<String> = emptySet(), // "<id>\u0001<text>" — see CustomLines
     val moodLog: Set<String> = emptySet(), // "<yyyy-MM-dd>|<calm|okay|heavy>", one per day
-)
+    val plusPassUntil: Long = 0L, // epoch ms; rewarded-ad day pass expiry
+) {
+    /** Free means no paid plan AND no live ad-earned day pass. */
+    val freeTier: Boolean
+        get() = Plans.isFree(plan) && System.currentTimeMillis() >= plusPassUntil
+}
 
 private object Keys {
     val OnboardingDone = booleanPreferencesKey("onboarding_done")
@@ -64,6 +70,7 @@ private object Keys {
     val PracticePace = stringPreferencesKey("practice_pace")
     val CustomLines = stringSetPreferencesKey("custom_lines")
     val MoodLog = stringSetPreferencesKey("mood_log")
+    val PlusPassUntil = longPreferencesKey("plus_pass_until")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -81,6 +88,7 @@ private fun Preferences.toSettings() = AttaSettings(
     practicePace = this[Keys.PracticePace] ?: "slow",
     customLines = this[Keys.CustomLines] ?: emptySet(),
     moodLog = this[Keys.MoodLog] ?: emptySet(),
+    plusPassUntil = this[Keys.PlusPassUntil] ?: 0L,
 )
 
 class AttaPrefs(private val context: Context) {
@@ -134,6 +142,9 @@ class AttaPrefs(private val context: Context) {
         it[Keys.CustomLines] = (it[Keys.CustomLines] ?: emptySet())
             .filterNot { entry -> entry.substringBefore('\u0001') == id }.toSet()
     }
+
+    suspend fun setPlusPassUntil(epochMs: Long) =
+        context.attaDataStore.edit { it[Keys.PlusPassUntil] = epochMs }
 
     /** One entry per day: relogging a day replaces its value. */
     suspend fun logMood(date: String, value: String) = context.attaDataStore.edit {

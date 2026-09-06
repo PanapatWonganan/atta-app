@@ -51,6 +51,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.atta.app.ads.AdBanner
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
@@ -89,7 +90,7 @@ fun WidgetGalleryScreen(
     val today = remember { LocalDate.now() }
     val line = AffirmationRepository.lineFor(today, settings.focusIds).text(settings.language)
     val date = AffirmationRepository.shortDate(today, settings.language)
-    val freeTier = Plans.isFree(settings.plan)
+    val freeTier = settings.freeTier
     val activeThemeId = if (freeTier) WidgetThemes.FreeThemeId else settings.themeId
 
     LazyColumn(
@@ -211,6 +212,9 @@ fun WidgetGalleryScreen(
                     )
                 }
             }
+            item {
+                AdBanner(Modifier.fillMaxWidth())
+            }
         }
     }
 }
@@ -314,7 +318,7 @@ fun SavedScreen(
     val scope = rememberCoroutineScope()
     val saved = Affirmations.All.filter { it.id in settings.savedIds }
     val custom = CustomLines.parse(settings.customLines)
-    val freeTier = Plans.isFree(settings.plan)
+    val freeTier = settings.freeTier
     var showEditor by remember { mutableStateOf(false) }
 
     Column(
@@ -406,7 +410,8 @@ fun SavedScreen(
             // No illustration, no mascot: the outline bookmark and two quiet lines.
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .weight(1f)
                     .padding(bottom = AttaDimens.Xxl),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -434,7 +439,7 @@ fun SavedScreen(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.weight(1f),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
                     top = 18.dp, bottom = AttaDimens.Xl,
                 ),
@@ -486,6 +491,13 @@ fun SavedScreen(
                     }
                 }
             }
+        }
+        if (settings.freeTier) {
+            AdBanner(
+                Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
+            )
         }
     }
 
@@ -655,7 +667,13 @@ fun SettingsScreen(
 
             SectionLabel("Account")
             SettingsRow(label = "Subscription", onClick = onOpenPaywall, divider = false) {
-                ValueText(Plans.label(settings.plan))
+                ValueText(
+                    if (!settings.freeTier && Plans.isFree(settings.plan)) {
+                        "Plus · day pass"
+                    } else {
+                        Plans.label(settings.plan)
+                    },
+                )
             }
             Spacer(Modifier.height(AttaDimens.Lg))
         }
@@ -675,7 +693,7 @@ fun SettingsScreen(
     if (showThemeSheet) {
         ThemeSheet(
             selectedId = settings.themeId,
-            freeTier = Plans.isFree(settings.plan),
+            freeTier = settings.freeTier,
             onDismiss = { showThemeSheet = false },
             onPick = { picked ->
                 showThemeSheet = false

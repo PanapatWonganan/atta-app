@@ -56,7 +56,6 @@ import com.atta.app.data.Affirmation
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
-import com.atta.app.data.Plans
 import com.atta.app.data.WidgetTheme
 import com.atta.app.data.WidgetThemes
 import com.atta.app.notify.DailyLineScheduler
@@ -98,7 +97,7 @@ fun HomeScreen(
         AffirmationRepository.feed(today, 30, settings.focusIds, eveningNow)
     }
     val theme = WidgetThemes.byId(
-        if (Plans.isFree(settings.plan)) WidgetThemes.FreeThemeId else settings.themeId,
+        if (settings.freeTier) WidgetThemes.FreeThemeId else settings.themeId,
     )
     val pagerState = rememberPagerState { feed.size }
     var showMenu by remember { mutableStateOf(false) }
@@ -156,7 +155,7 @@ fun HomeScreen(
     if (showThemes) {
         ThemeSheet(
             selectedId = theme.id,
-            freeTier = Plans.isFree(settings.plan),
+            freeTier = settings.freeTier,
             onDismiss = { showThemes = false },
             onPick = { picked ->
                 showThemes = false
@@ -508,7 +507,7 @@ fun ViewerScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val theme = WidgetThemes.byId(
-        if (Plans.isFree(settings.plan)) WidgetThemes.FreeThemeId else settings.themeId,
+        if (settings.freeTier) WidgetThemes.FreeThemeId else settings.themeId,
     )
     val line = affirmation.text(settings.language)
     HomeCard(

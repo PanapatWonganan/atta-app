@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.atta.app.ads.AttaAds
 import com.atta.app.billing.AttaBilling
 import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
@@ -91,7 +92,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
 
     val billing = remember { AttaBilling(context.applicationContext) }
     val billingReady by billing.ready.collectAsState()
-    LaunchedEffect(Unit) { billing.connect() }
+    val adReady by AttaAds.rewardedReady.collectAsState()
+    LaunchedEffect(Unit) {
+        billing.connect()
+        AttaAds.init(context)
+    }
     DisposableEffect(Unit) { onDispose { billing.release() } }
 
     // Play purchases land here: persist the plan, then close any open paywall
@@ -183,6 +188,19 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                     }
                 },
                 onRestore = { billing.restore() },
+                adReady = adReady && Plans.isFree(settings.plan),
+                onWatchAd = {
+                    (context as? Activity)?.let { activity ->
+                        AttaAds.showRewarded(activity) {
+                            scope.launch {
+                                prefs.setPlusPassUntil(
+                                    System.currentTimeMillis() + 24L * 60 * 60 * 1000,
+                                )
+                            }
+                            close(null)
+                        }
+                    }
+                },
             )
         }
         composable("widgetmoment") {
@@ -199,7 +217,13 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                 settings = settings,
                 source = entry.arguments?.getString("source") ?: "feed",
                 startIndex = entry.arguments?.getString("index")?.toIntOrNull() ?: 0,
-                onClose = { nav.popBackStack() },
+                onClose = {
+                    nav.popBackStack()
+                    // Free tier: at most one interstitial per app session here.
+                    if (settings.freeTier) {
+                        (context as? Activity)?.let { AttaAds.maybeShowInterstitial(it) }
+                    }
+                },
                 onRequireUpgrade = { nav.navigate("paywall/upgrade") },
             )
         }
