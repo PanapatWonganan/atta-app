@@ -726,6 +726,78 @@ object Affirmations {
             th = "สิ่งที่คุณรดน้ำด้วยความใส่ใจ\nย่อมเรียนรู้ที่จะเติบโต",
             categoryId = "manifest",
         ),
+        Affirmation(
+            id = "her-own-timeline",
+            en = "You are not late.\nYour season keeps its own time.",
+            th = "คุณไม่ได้ช้ากว่าใคร\nฤดูของคุณมีเวลาของมันเอง",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "soft-and-certain",
+            en = "Softness and certainty\ncan live in the same woman.",
+            th = "ความอ่อนโยนกับความแน่วแน่\nอยู่ในผู้หญิงคนเดียวกันได้",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "your-own-yes",
+            en = "The life you want\nbegins at your own yes.",
+            th = "ชีวิตที่คุณต้องการ\nเริ่มต้นที่คำตกลงของคุณเอง",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "deserve-to-receive",
+            en = "You can be the giver\nand still deserve to receive.",
+            th = "คุณเป็นผู้ให้มาตลอด\nและยังคู่ควรกับการได้รับ",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "always-your-story",
+            en = "Stop auditioning.\nIt has always been your story.",
+            th = "ไม่ต้องขอบทจากใคร\nเรื่องนี้เป็นของคุณมาตลอด",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "answer-came-with-you",
+            en = "Walk in like the answer\ncame with you.",
+            th = "เดินเข้าไปราวกับคำตอบ\nมาพร้อมกับคุณแล้ว",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "ambition-can-whisper",
+            en = "Ambition can whisper\nand still move mountains.",
+            th = "ความทะเยอทะยานกระซิบได้\nและยังเคลื่อนภูเขาได้อยู่ดี",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "wanting-more-is-direction",
+            en = "Wanting more is not greed.\nIt is direction.",
+            th = "การอยากได้มากกว่านี้ไม่ใช่ความโลภ\nแต่คือเข็มทิศ",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "becoming-her",
+            en = "Every quiet morning,\nyou are becoming her.",
+            th = "ทุกเช้าที่เงียบสงบ\nคุณกำลังกลายเป็นเธอคนนั้น",
+            categoryId = "manifest", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "build-a-longer-table",
+            en = "If they saved you no seat,\nbuild a longer table.",
+            th = "ถ้าไม่มีใครเผื่อที่นั่งให้\nก็สร้างโต๊ะที่ยาวกว่าเดิม",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "repeat-becomes-life",
+            en = "What you repeat quietly each day\nbecomes how your life looks.",
+            th = "สิ่งที่คุณย้ำกับตัวเองเบา ๆ ทุกวัน\nจะกลายเป็นหน้าตาของชีวิต",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "planted-keeps-growing",
+            en = "Even while you sleep,\nwhat you planted keeps growing.",
+            th = "แม้ในยามหลับ\nสิ่งที่คุณปลูกไว้ยังเติบโต",
+            categoryId = "manifest", daypart = Daypart.NIGHT,
+        ),
 
         // business
         Affirmation(

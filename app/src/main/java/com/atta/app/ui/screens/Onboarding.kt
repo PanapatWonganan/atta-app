@@ -96,7 +96,12 @@ private data class Question(val prompt: String, val options: List<String>)
 private val OnboardingQuestions = listOf(
     Question(
         "What brings you here?",
-        listOf("A calmer start to the day", "Kinder self-talk", "Firmer boundaries", "Better nights"),
+        listOf(
+            "Manifesting the life I want",
+            "A calmer start to the day",
+            "Kinder self-talk",
+            "Better nights",
+        ),
     ),
     Question(
         "What do your mornings usually feel like?",
@@ -117,10 +122,12 @@ private val OnboardingQuestions = listOf(
 )
 
 private fun deriveFocus(answers: List<Int>): Set<String> {
-    val q1 = listOf("calm-mornings", "self-worth", "boundaries", "nights")
+    val q1 = listOf("manifest", "calm-mornings", "self-worth", "nights")
     val q2 = listOf("calm-mornings", "gratitude", "rest", "calm-mornings")
     val q5 = listOf("rest", "focus-work", "courage", "gratitude")
+    // Manifest is the product's center of gravity: it leads every first week.
     val picks = linkedSetOf(
+        "manifest",
         q1[answers[0].coerceIn(0, 3)],
         q5[answers[4].coerceIn(0, 3)],
         q2[answers[1].coerceIn(0, 3)],

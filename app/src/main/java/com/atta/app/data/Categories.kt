@@ -20,6 +20,7 @@ data class Category(
 object Categories {
 
     val All = listOf(
+        Category("manifest", "Manifest", "ดึงดูดสิ่งดี", AttaPalette.Plum),
         Category("calm-mornings", "Calm mornings", "เช้าที่สงบ", AttaPalette.Sage),
         Category("self-worth", "Self-worth", "คุณค่าในตัวเอง", AttaPalette.Clay),
         Category("boundaries", "Boundaries", "ขอบเขตของใจ", AttaPalette.DeepTeal),
@@ -30,7 +31,6 @@ object Categories {
         Category("healing", "Healing", "การเยียวยา", AttaPalette.Clay),
         Category("courage", "Courage", "ความกล้า", AttaPalette.DeepTeal),
         Category("nights", "Nights", "ค่ำคืน", AttaPalette.Plum),
-        Category("manifest", "Manifest", "ดึงดูดสิ่งดี", AttaPalette.Plum),
         Category("business", "Business inspiration", "เส้นทางธุรกิจ", AttaPalette.DeepTeal),
         Category("motivation", "Motivation", "พลังใจ", AttaPalette.Clay),
     )
