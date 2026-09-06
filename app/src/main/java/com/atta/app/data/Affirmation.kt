@@ -670,6 +670,174 @@ object Affirmations {
             th = "การนอนหลับคือความเชื่อใจ\nว่าเช้าวันใหม่จะมาถึง",
             categoryId = "nights", daypart = Daypart.NIGHT,
         ),
+
+        // manifest
+        Affirmation(
+            id = "name-it-quietly",
+            en = "Name what you want\nquietly, and mean it.",
+            th = "เอ่ยถึงสิ่งที่ต้องการ\nเบา ๆ แต่หมายความอย่างนั้นจริง ๆ",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "learning-your-name",
+            en = "What is meant for you\nis already learning your name.",
+            th = "สิ่งที่ใช่สำหรับคุณ\nกำลังเรียนรู้ชื่อของคุณอยู่",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "make-room-first",
+            en = "Make room first.\nGood things need somewhere to land.",
+            th = "เคลียร์ที่ว่างไว้ก่อน\nสิ่งดี ๆ ต้องการที่ลงจอด",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "answer-already-yes",
+            en = "Live today like the answer\nis already yes.",
+            th = "ใช้ชีวิตวันนี้ราวกับคำตอบ\nคือใช่ไปแล้ว",
+            categoryId = "manifest", daypart = Daypart.MORNING,
+        ),
+        Affirmation(
+            id = "picture-then-step",
+            en = "Picture it clearly.\nThen take one ordinary step.",
+            th = "เห็นภาพให้ชัด\nแล้วก้าวหนึ่งก้าวธรรมดา ๆ",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "dream-would-recognize",
+            en = "Grow into the person\nyour dream would recognize.",
+            th = "เติบโตเป็นคนที่\nความฝันของคุณจำได้",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "small-yeses",
+            en = "Notice the small yeses.\nThey are the path.",
+            th = "สังเกตคำตอบรับเล็ก ๆ\nนั่นแหละคือเส้นทาง",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "speak-future-gently",
+            en = "Speak about your future\nthe way you want it to feel.",
+            th = "พูดถึงอนาคต\nแบบเดียวกับที่อยากให้มันรู้สึก",
+            categoryId = "manifest",
+        ),
+        Affirmation(
+            id = "what-you-water",
+            en = "What you give attention to\nlearns to grow.",
+            th = "สิ่งที่คุณรดน้ำด้วยความใส่ใจ\nย่อมเรียนรู้ที่จะเติบโต",
+            categoryId = "manifest",
+        ),
+
+        // business
+        Affirmation(
+            id = "noise-becomes-optional",
+            en = "Build so well that\nnoise becomes optional.",
+            th = "สร้างให้ดีจนไม่จำเป็น\nต้องเสียงดัง",
+            categoryId = "business",
+        ),
+        Affirmation(
+            id = "serve-one-deeply",
+            en = "Serve one person deeply.\nScale comes later.",
+            th = "ดูแลลูกค้าหนึ่งคนให้ลึกซึ้ง\nการเติบโตค่อยตามมา",
+            categoryId = "business",
+        ),
+        Affirmation(
+            id = "boring-consistency",
+            en = "Most empires are built\non boring consistency.",
+            th = "อาณาจักรส่วนใหญ่สร้างจาก\nความสม่ำเสมอที่แสนธรรมดา",
+            categoryId = "business",
+        ),
+        Affirmation(
+            id = "complaint-open-door",
+            en = "Every complaint you hear\nis a door left open.",
+            th = "ทุกเสียงบ่นที่ได้ยิน\nคือประตูที่ยังเปิดรออยู่",
+            categoryId = "business",
+        ),
+        Affirmation(
+            id = "patience-strategy",
+            en = "Patience is a strategy\nmost competitors cannot afford.",
+            th = "ความอดทนคือกลยุทธ์\nที่คู่แข่งส่วนใหญ่จ่ายไม่ไหว",
+            categoryId = "business",
+        ),
+        Affirmation(
+            id = "small-bets",
+            en = "Make small bets often.\nProtect the downside.",
+            th = "ลงเดิมพันเล็ก ๆ บ่อย ๆ\nและกันขาลงไว้เสมอ",
+            categoryId = "business",
+        ),
+        Affirmation(
+            id = "rested-founder",
+            en = "A rested founder\nsees further.",
+            th = "เจ้าของกิจการที่ได้พัก\nมองได้ไกลกว่า",
+            categoryId = "business", daypart = Daypart.NIGHT,
+        ),
+        Affirmation(
+            id = "trust-compounds",
+            en = "Trust compounds\nfaster than capital.",
+            th = "ความไว้ใจทบต้น\nเร็วกว่าเงินทุน",
+            categoryId = "business",
+        ),
+        Affirmation(
+            id = "harder-to-replace",
+            en = "End each week\na little harder to replace.",
+            th = "จบแต่ละสัปดาห์ให้ตัวเอง\nถูกแทนที่ยากขึ้นอีกนิด",
+            categoryId = "business",
+        ),
+
+        // motivation
+        Affirmation(
+            id = "momentum-is-built",
+            en = "Momentum is built,\nnever found.",
+            th = "โมเมนตัมคือสิ่งที่สร้างขึ้น\nไม่ใช่สิ่งที่บังเอิญเจอ",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "five-minutes-first",
+            en = "Give it five minutes.\nMost walls are doors.",
+            th = "ให้เวลามันสักห้านาที\nกำแพงส่วนใหญ่ที่จริงคือประตู",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "discipline-remembers",
+            en = "Discipline is remembering\nwhat you asked for.",
+            th = "วินัยคือการจำได้ว่า\nตัวเองขออะไรไว้",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "slow-days-count",
+            en = "Slow days still count.\nShowing up is the win.",
+            th = "วันที่เชื่องช้าก็ยังนับ\nแค่มาถึงก็ชนะแล้ว",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "assembled-from-afternoons",
+            en = "Tomorrow is assembled\nfrom afternoons like this one.",
+            th = "พรุ่งนี้ถูกประกอบขึ้น\nจากบ่ายวันแบบนี้เอง",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "one-more-honest-push",
+            en = "One more honest push,\nthen rest without guilt.",
+            th = "ตั้งใจผลักอีกหนึ่งครั้ง\nแล้วพักโดยไม่ต้องรู้สึกผิด",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "race-yesterday-gently",
+            en = "Race the person you were\nyesterday. Gently.",
+            th = "แข่งกับตัวเองของเมื่อวาน\nอย่างอ่อนโยน",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "pace-is-fine",
+            en = "Your pace is fine.\nJust do not stop the walk.",
+            th = "จังหวะของคุณดีอยู่แล้ว\nแค่อย่าหยุดเดิน",
+            categoryId = "motivation",
+        ),
+        Affirmation(
+            id = "clean-scoreboard",
+            en = "Every morning is\na clean scoreboard.",
+            th = "ทุกเช้าคือกระดานคะแนน\nที่ถูกลบใหม่",
+            categoryId = "motivation", daypart = Daypart.MORNING,
+        ),
     )
 
     fun byId(id: String?): Affirmation? = All.firstOrNull { it.id == id }

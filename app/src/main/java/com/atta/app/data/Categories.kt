@@ -4,9 +4,9 @@ import androidx.compose.ui.graphics.Color
 import com.atta.app.ui.theme.AttaPalette
 
 /**
- * Ten focus categories (placeholder names pending the client's list). Each maps
- * to one muted accent per the brief: sage = calm, clay = self & love,
- * deep teal = strength & boundaries, plum = night.
+ * Thirteen focus categories. Each maps to one muted accent per the brief:
+ * sage = calm, clay = self & love & drive, deep teal = strength & work,
+ * plum = night & intention.
  */
 data class Category(
     val id: String,
@@ -30,6 +30,9 @@ object Categories {
         Category("healing", "Healing", "การเยียวยา", AttaPalette.Clay),
         Category("courage", "Courage", "ความกล้า", AttaPalette.DeepTeal),
         Category("nights", "Nights", "ค่ำคืน", AttaPalette.Plum),
+        Category("manifest", "Manifest", "ดึงดูดสิ่งดี", AttaPalette.Plum),
+        Category("business", "Business inspiration", "เส้นทางธุรกิจ", AttaPalette.DeepTeal),
+        Category("motivation", "Motivation", "พลังใจ", AttaPalette.Clay),
     )
 
     const val MaxSelected = 3
