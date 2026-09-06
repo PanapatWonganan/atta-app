@@ -10,6 +10,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -55,6 +57,7 @@ import com.atta.app.data.AttaSettings
 import com.atta.app.data.Plans
 import com.atta.app.data.WidgetThemes
 import com.atta.app.ui.components.ChevronDownIcon
+import com.atta.app.ui.components.ChevronUpIcon
 import com.atta.app.ui.components.PauseIcon
 import com.atta.app.ui.components.PlayIcon
 import com.atta.app.ui.theme.Atta
@@ -92,7 +95,6 @@ fun PracticeScreen(
     )
     val freeTier = Plans.isFree(settings.plan)
     val mood = if (freeTier) Moods.None else Moods.byId(settings.practiceMood)
-    val slow = settings.practicePace != "normal"
 
     val playback by PracticeService.state.collectAsState()
     var showMoods by remember { mutableStateOf(false) }
@@ -117,6 +119,28 @@ fun PracticeScreen(
             .drawBehind {
                 drawRect(brush = theme.brush(size.width, size.height))
                 drawRect(Color.Black.copy(alpha = 0.30f))
+            }
+            // Swipe up for the next line, down for the previous one — the
+            // service jumps there and keeps reading.
+            .pointerInput(feed.size, source) {
+                var total = 0f
+                detectVerticalDragGestures(
+                    onDragStart = { total = 0f },
+                    onVerticalDrag = { _, amount -> total += amount },
+                    onDragEnd = {
+                        val threshold = 110.dp.toPx()
+                        val current = PracticeService.state.value.index
+                        if (total < -threshold) {
+                            PracticeService.start(context, (current + 1) % feed.size, source)
+                        } else if (total > threshold) {
+                            PracticeService.start(
+                                context,
+                                (current - 1 + feed.size) % feed.size,
+                                source,
+                            )
+                        }
+                    },
+                )
             },
     ) {
         Column(
@@ -215,9 +239,15 @@ fun PracticeScreen(
             Spacer(Modifier.height(34.dp))
             BreathingRule(theme = theme, breathing = playback.playing)
             Spacer(Modifier.weight(1.2f))
+            ChevronUpIcon(
+                color = theme.ink.copy(alpha = 0.3f),
+                modifier = Modifier.size(width = 14.dp, height = 7.dp),
+            )
+            Spacer(Modifier.height(20.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(26.dp)) {
-                listOf("slow" to "SLOW", "normal" to "NORMAL").forEach { (id, label) ->
-                    val selected = (id == "slow") == slow
+                listOf("off" to "VOICE OFF", "slow" to "SLOW", "normal" to "NORMAL").forEach { (id, label) ->
+                    val selected = settings.practicePace == id ||
+                        (id == "slow" && settings.practicePace !in setOf("off", "normal"))
                     Text(
                         text = label,
                         style = AttaType.eyebrow.copy(fontSize = 10.sp, letterSpacing = 1.8.sp),

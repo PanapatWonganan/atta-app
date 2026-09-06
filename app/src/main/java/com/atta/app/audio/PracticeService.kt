@@ -223,14 +223,19 @@ class PracticeService : Service() {
                         delay(400)
                         continue
                     }
-                    PracticeVoice.State.Ready -> {
-                        delay(700)
-                        voice?.speak(
-                            entry.text(current.language),
-                            current.practicePace != "normal",
-                        )
-                        delay(LineGapMs)
-                    }
+                    // Voice can be switched off (pace "off"): the mood bed and
+                    // the line rhythm continue in silence.
+                    PracticeVoice.State.Ready ->
+                        if (current.practicePace == "off") {
+                            delay(SilentLineMs)
+                        } else {
+                            delay(700)
+                            voice?.speak(
+                                entry.text(current.language),
+                                current.practicePace != "normal",
+                            )
+                            delay(LineGapMs)
+                        }
                     PracticeVoice.State.Unavailable -> delay(SilentLineMs)
                 }
                 if (endPending) {
