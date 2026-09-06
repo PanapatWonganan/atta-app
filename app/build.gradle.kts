@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.billing.ktx)
     implementation(libs.play.services.ads)
+    implementation(libs.user.messaging.platform)
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.ui.tooling)
 }

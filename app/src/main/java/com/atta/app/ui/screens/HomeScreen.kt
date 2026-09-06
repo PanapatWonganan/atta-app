@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.snapshotFlow
 import androidx.core.content.ContextCompat
+import com.atta.app.ads.AttaAds
+import com.atta.app.ads.NativeAdCard
 import com.atta.app.audio.PracticeQueue
 import com.atta.app.audio.PracticeService
 import com.atta.app.data.Affirmation
@@ -83,6 +85,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
+/** One sponsored card after every this-many lines, free tier only. */
+private const val AdEvery = 7
+
 /**
  * Home is the feed: full-bleed theme, one card per swipe, no tab bar. The
  * top-right dots open a sheet with Widgets, Focus, Saved, Settings.
@@ -103,7 +108,16 @@ fun HomeScreen(
     val theme = WidgetThemes.byId(
         if (settings.freeTier) WidgetThemes.FreeThemeId else settings.themeId,
     )
-    val pagerState = rememberPagerState { feed.size }
+    // The free feed carries one sponsored card after every AdEvery lines;
+    // these mappings convert pager pages <-> feed indexes across the ad pages
+    // so the practice voice and the cards never drift apart.
+    val nativeAd by AttaAds.nativeAd.collectAsState()
+    val showAds = settings.freeTier && nativeAd != null
+    val pageCount = if (showAds) feed.size + feed.size / AdEvery else feed.size
+    fun isAdPage(page: Int) = showAds && (page + 1) % (AdEvery + 1) == 0
+    fun feedIndexOf(page: Int) = if (showAds) page - (page + 1) / (AdEvery + 1) else page
+    fun displayIndexOf(feedIndex: Int) = if (showAds) feedIndex + feedIndex / AdEvery else feedIndex
+    val pagerState = rememberPagerState { pageCount }
     var showMenu by remember { mutableStateOf(false) }
     var showThemes by remember { mutableStateOf(false) }
 
@@ -127,50 +141,57 @@ fun HomeScreen(
     // swipe jumps the reading to the visible card. (index == page is the
     // no-op guard that keeps the two effects from chasing each other.)
     val playback by PracticeService.state.collectAsState()
-    LaunchedEffect(playback.index, playback.active, playback.playing) {
+    LaunchedEffect(playback.index, playback.active, playback.playing, showAds) {
         if (playback.active && playback.playing &&
             playback.source == PracticeQueue.SourceFeed &&
             playback.index in feed.indices &&
-            pagerState.currentPage != playback.index
+            pagerState.currentPage != displayIndexOf(playback.index)
         ) {
-            pagerState.animateScrollToPage(playback.index)
+            pagerState.animateScrollToPage(displayIndexOf(playback.index))
         }
     }
-    LaunchedEffect(pagerState) {
+    LaunchedEffect(pagerState, showAds) {
         snapshotFlow { pagerState.settledPage }.collect { page ->
+            if (isAdPage(page)) return@collect
             val reading = PracticeService.state.value
             if (reading.active && reading.playing &&
                 reading.source == PracticeQueue.SourceFeed &&
-                reading.index != page
+                reading.index != feedIndexOf(page)
             ) {
-                PracticeService.start(context, page, PracticeQueue.SourceFeed)
+                PracticeService.start(context, feedIndexOf(page), PracticeQueue.SourceFeed)
             }
         }
     }
 
     VerticalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
-        val (date, affirmation) = feed[page]
-        val line = affirmation.text(settings.language)
-        val isNight = (page == 0 && eveningNow) || affirmation.daypart.name == "NIGHT"
-        val eyebrow = (if (isNight) "Night" else "Morning") +
-            " · " + AffirmationRepository.shortDate(date, settings.language)
-        HomeCard(
-            theme = theme,
-            line = line,
-            eyebrow = eyebrow,
-            saved = affirmation.id in settings.savedIds,
-            onToggleSave = {
-                scope.launch {
-                    prefs.toggleSaved(affirmation.id)
-                    runCatching { AttaWidgetUpdater.updateAll(context) }
-                }
-            },
-            onShare = { shareLine(context, theme, line) },
-            onOpenThemes = { showThemes = true },
-            onOpenMenu = { showMenu = true },
-            showChevron = page < feed.lastIndex,
-            onOpenPractice = { onOpen("practice/feed/$page") },
-        )
+        val ad = nativeAd
+        if (isAdPage(page) && ad != null) {
+            NativeAdCard(ad = ad, modifier = Modifier.fillMaxSize())
+        } else {
+            val feedIndex = feedIndexOf(page).coerceIn(0, feed.lastIndex)
+            val (date, affirmation) = feed[feedIndex]
+            val line = affirmation.text(settings.language)
+            val isNight = (feedIndex == 0 && eveningNow) || affirmation.daypart.name == "NIGHT"
+            val eyebrow = (if (isNight) "Night" else "Morning") +
+                " · " + AffirmationRepository.shortDate(date, settings.language)
+            HomeCard(
+                theme = theme,
+                line = line,
+                eyebrow = eyebrow,
+                saved = affirmation.id in settings.savedIds,
+                onToggleSave = {
+                    scope.launch {
+                        prefs.toggleSaved(affirmation.id)
+                        runCatching { AttaWidgetUpdater.updateAll(context) }
+                    }
+                },
+                onShare = { shareLine(context, theme, line) },
+                onOpenThemes = { showThemes = true },
+                onOpenMenu = { showMenu = true },
+                showChevron = page < pageCount - 1,
+                onOpenPractice = { onOpen("practice/feed/$feedIndex") },
+            )
+        }
     }
 
     if (showMenu) {

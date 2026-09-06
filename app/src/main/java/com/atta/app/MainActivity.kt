@@ -95,7 +95,8 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
     val adReady by AttaAds.rewardedReady.collectAsState()
     LaunchedEffect(Unit) {
         billing.connect()
-        AttaAds.init(context)
+        // Consent gate first, then the SDK; safe no-op on repeat calls.
+        (context as? Activity)?.let { AttaAds.start(it) }
     }
     DisposableEffect(Unit) { onDispose { billing.release() } }
 
