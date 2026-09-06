@@ -61,7 +61,6 @@ import com.atta.app.data.CustomLines
 import com.atta.app.data.Plans
 import com.atta.app.data.WidgetThemes
 import com.atta.app.notify.DailyLineScheduler
-import com.atta.app.ui.components.AttaToggle
 import com.atta.app.ui.components.BookmarkIcon
 import com.atta.app.ui.components.Eyebrow
 import com.atta.app.ui.components.PlayIcon
@@ -575,6 +574,7 @@ fun SettingsScreen(
     var showThemeSheet by remember { mutableStateOf(false) }
     var showAppearance by remember { mutableStateOf(false) }
     var showLanguage by remember { mutableStateOf(false) }
+    var showTimesSheet by remember { mutableStateOf(false) }
     val theme = WidgetThemes.byId(settings.themeId)
 
     Column(
@@ -598,9 +598,16 @@ fun SettingsScreen(
             )
             Spacer(Modifier.height(10.dp))
 
-            SectionLabel("Daily line")
+            SectionLabel("Daily lines")
+            SettingsRow(label = "Times a day", onClick = { showTimesSheet = true }) {
+                Text(
+                    text = "${settings.remindersPerDay}×",
+                    style = AttaType.body.copy(fontSize = 14.sp),
+                    color = AttaPalette.ChampagneDeep,
+                )
+            }
             SettingsRow(
-                label = "Arrives at",
+                label = "From",
                 onClick = {
                     TimePickerDialog(
                         context,
@@ -616,22 +623,26 @@ fun SettingsScreen(
                     ).show()
                 },
             ) {
-                Text(
-                    text = "%d:%02d".format(settings.morningHour, settings.morningMinute),
-                    style = AttaType.body.copy(fontSize = 14.sp),
-                    color = AttaPalette.ChampagneDeep,
-                )
+                ValueText("%d:%02d".format(settings.morningHour, settings.morningMinute))
             }
-            SettingsRow(label = "Evening line") {
-                AttaToggle(
-                    checked = settings.eveningLine,
-                    onCheckedChange = {
-                        scope.launch {
-                            prefs.setEveningLine(it)
-                            DailyLineScheduler.schedule(context)
-                        }
-                    },
-                )
+            SettingsRow(
+                label = "Until",
+                onClick = {
+                    TimePickerDialog(
+                        context,
+                        { _, hour, minute ->
+                            scope.launch {
+                                prefs.setWindowEnd(hour, minute)
+                                DailyLineScheduler.schedule(context)
+                            }
+                        },
+                        settings.windowEndHour,
+                        settings.windowEndMinute,
+                        true,
+                    ).show()
+                },
+            ) {
+                ValueText("%d:%02d".format(settings.windowEndHour, settings.windowEndMinute))
             }
             SettingsRow(label = "Focus areas", onClick = onOpenFocus) {
                 ValueText("${settings.focusIds.size} chosen")
@@ -717,6 +728,21 @@ fun SettingsScreen(
             onSelect = {
                 showAppearance = false
                 scope.launch { prefs.setAppearance(it) }
+            },
+        )
+    }
+    if (showTimesSheet) {
+        OptionSheet(
+            title = "Times a day",
+            options = listOf("1" to "Once", "2" to "Twice", "3" to "3 times", "5" to "5 times", "10" to "10 times"),
+            selectedKey = settings.remindersPerDay.toString(),
+            onDismiss = { showTimesSheet = false },
+            onSelect = { key ->
+                showTimesSheet = false
+                scope.launch {
+                    prefs.setRemindersPerDay(key.toInt())
+                    DailyLineScheduler.schedule(context)
+                }
             },
         )
     }

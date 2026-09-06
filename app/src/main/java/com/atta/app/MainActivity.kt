@@ -147,10 +147,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
             WelcomeScreen { nav.navigate("questions") }
         }
         composable("questions") {
-            QuestionsScreen { focusIds, themeId ->
+            QuestionsScreen { focusIds, themeId, perDay ->
                 scope.launch {
                     prefs.setFocusIds(focusIds)
                     prefs.setThemeId(themeId)
+                    prefs.setRemindersPerDay(perDay)
                 }
                 nav.navigate("processing")
             }

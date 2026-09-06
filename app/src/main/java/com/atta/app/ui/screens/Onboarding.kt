@@ -119,6 +119,10 @@ private val OnboardingQuestions = listOf(
         "What should this week make room for?",
         listOf("Rest", "Focus", "Courage", "Gratitude"),
     ),
+    Question(
+        "How many lines a day?",
+        listOf("Once, in the morning", "Three, spread out", "Five, spread out", "Ten — keep them coming"),
+    ),
 )
 
 private fun deriveFocus(answers: List<Int>): Set<String> {
@@ -144,9 +148,12 @@ private fun deriveFocus(answers: List<Int>): Set<String> {
 private fun deriveTheme(answers: List<Int>): String =
     listOf("dawn", "sage", "dusk", "onyx")[answers[3].coerceIn(0, 3)]
 
+private fun derivePerDay(answers: List<Int>): Int =
+    listOf(1, 3, 5, 10)[answers[5].coerceIn(0, 3)]
+
 /** Five single-select cards, hairline progress. Answers seed focus + first theme. */
 @Composable
-fun QuestionsScreen(onDone: (focusIds: Set<String>, themeId: String) -> Unit) {
+fun QuestionsScreen(onDone: (focusIds: Set<String>, themeId: String, perDay: Int) -> Unit) {
     val colors = Atta.colors
     var index by remember { mutableIntStateOf(0) }
     val answers = remember { MutableList(OnboardingQuestions.size) { -1 }.toMutableStateList() }
@@ -209,7 +216,7 @@ fun QuestionsScreen(onDone: (focusIds: Set<String>, themeId: String) -> Unit) {
                 if (index < OnboardingQuestions.lastIndex) {
                     index++
                 } else {
-                    onDone(deriveFocus(answers), deriveTheme(answers))
+                    onDone(deriveFocus(answers), deriveTheme(answers), derivePerDay(answers))
                 }
             },
         )

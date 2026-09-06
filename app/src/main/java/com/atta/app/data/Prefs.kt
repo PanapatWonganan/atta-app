@@ -38,9 +38,12 @@ data class AttaSettings(
     val savedIds: Set<String> = emptySet(),
     val themeId: String = WidgetThemes.DefaultId,
     val focusIds: Set<String> = emptySet(),
-    val morningHour: Int = 7,
+    val morningHour: Int = 7, // window start for daily-line reminders
     val morningMinute: Int = 0,
     val eveningLine: Boolean = true,
+    val remindersPerDay: Int = 3, // evenly spaced inside the window
+    val windowEndHour: Int = 21,
+    val windowEndMinute: Int = 0,
     val plan: String = Plans.None,
     val appearance: String = "system", // system | light | dark
     val language: String = "en", // en | th
@@ -77,6 +80,9 @@ private object Keys {
     val UsageDays = stringSetPreferencesKey("usage_days")
     val ReviewLastAsk = longPreferencesKey("review_last_ask")
     val ReviewAskCount = intPreferencesKey("review_ask_count")
+    val RemindersPerDay = intPreferencesKey("reminders_per_day")
+    val WindowEndHour = intPreferencesKey("window_end_hour")
+    val WindowEndMinute = intPreferencesKey("window_end_minute")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -87,6 +93,9 @@ private fun Preferences.toSettings() = AttaSettings(
     morningHour = this[Keys.MorningHour] ?: 7,
     morningMinute = this[Keys.MorningMinute] ?: 0,
     eveningLine = this[Keys.EveningLine] ?: true,
+    remindersPerDay = this[Keys.RemindersPerDay] ?: 3,
+    windowEndHour = this[Keys.WindowEndHour] ?: 21,
+    windowEndMinute = this[Keys.WindowEndMinute] ?: 0,
     plan = this[Keys.Plan] ?: Plans.None,
     appearance = this[Keys.Appearance] ?: "system",
     language = this[Keys.Language] ?: "en",
@@ -127,6 +136,14 @@ class AttaPrefs(private val context: Context) {
 
     suspend fun setEveningLine(enabled: Boolean) =
         context.attaDataStore.edit { it[Keys.EveningLine] = enabled }
+
+    suspend fun setRemindersPerDay(count: Int) =
+        context.attaDataStore.edit { it[Keys.RemindersPerDay] = count }
+
+    suspend fun setWindowEnd(hour: Int, minute: Int) = context.attaDataStore.edit {
+        it[Keys.WindowEndHour] = hour
+        it[Keys.WindowEndMinute] = minute
+    }
 
     suspend fun setPlan(plan: String) =
         context.attaDataStore.edit { it[Keys.Plan] = plan }

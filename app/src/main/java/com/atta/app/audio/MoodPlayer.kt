@@ -12,7 +12,9 @@ object Moods {
     val Calm = Mood("calm", "Calm", R.raw.mood_calm)
     val Rain = Mood("rain", "Rain", R.raw.mood_rain)
     val Waves = Mood("waves", "Waves", R.raw.mood_waves)
-    val All = listOf(None, Calm, Rain, Waves)
+    val Wind = Mood("wind", "Wind", R.raw.mood_wind)
+    val Stream = Mood("stream", "Stream", R.raw.mood_stream)
+    val All = listOf(None, Calm, Rain, Waves, Wind, Stream)
 
     fun byId(id: String?): Mood = All.firstOrNull { it.id == id } ?: Calm
 }

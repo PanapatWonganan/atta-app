@@ -25,6 +25,25 @@ object AffirmationRepository {
         return candidates[idx.toInt()]
     }
 
+    /**
+     * A distinct line per reminder slot within a day. Deterministic, so a
+     * rescheduled worker repeats its own line instead of drifting.
+     */
+    fun lineForSlot(
+        date: LocalDate,
+        slot: Int,
+        focusIds: Set<String> = emptySet(),
+        evening: Boolean = false,
+    ): Affirmation {
+        val pool = Affirmations.All.filter {
+            if (evening) it.daypart != Daypart.MORNING else it.daypart != Daypart.NIGHT
+        }
+        val focused = pool.filter { it.categoryId in focusIds }
+        val candidates = if (focused.isNotEmpty()) focused else pool
+        val idx = Math.floorMod(date.toEpochDay() * 7 + slot, candidates.size.toLong())
+        return candidates[idx.toInt()]
+    }
+
     /** Home feed: today first, then one line per previous day. */
     fun feed(
         today: LocalDate,

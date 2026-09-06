@@ -70,6 +70,35 @@ def waves():
     return out
 
 
+def wind():
+    """Broad noise with long slow gusts — high plains wind."""
+    rng = random.Random(17)
+    out = [0.0] * N
+    lp1 = lp2 = 0.0
+    for i in range(N):
+        w = rng.uniform(-1, 1)
+        lp1 += 0.12 * (w - lp1)
+        lp2 += 0.06 * (lp1 - lp2)
+        gust = lfo(i, 3, 0.35, 1.0, power=1.3) * lfo(i, 5, 0.7, 1.0)
+        out[i] = (lp2 * 1.6 + lp1 * 0.3) * gust
+    return out
+
+
+def stream():
+    """Bright bubbling noise over a soft bed — a small stream."""
+    rng = random.Random(19)
+    out = [0.0] * N
+    lp = bp_prev_in = bp_prev = 0.0
+    for i in range(N):
+        w = rng.uniform(-1, 1)
+        lp += 0.10 * (w - lp)  # soft water bed
+        bp = 0.88 * (bp_prev + w - bp_prev_in)  # bright trickle band
+        bp_prev_in, bp_prev = w, bp
+        sparkle = bp * lfo(i, 24, 0.4, 1.0)  # fast shimmer
+        out[i] = lp * 0.8 + sparkle * 0.22
+    return out
+
+
 def loop_crossfade(samples, seconds=1.5):
     """Blend the tail into the head and trim it, so end==start character."""
     n = int(SR * seconds)
@@ -98,3 +127,5 @@ if __name__ == "__main__":
     write("mood_calm.wav", calm())  # periodic by construction, no crossfade
     write("mood_rain.wav", loop_crossfade(rain()))
     write("mood_waves.wav", loop_crossfade(waves()))
+    write("mood_wind.wav", loop_crossfade(wind()))
+    write("mood_stream.wav", loop_crossfade(stream()))

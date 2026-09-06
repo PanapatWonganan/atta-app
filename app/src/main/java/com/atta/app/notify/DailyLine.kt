@@ -21,11 +21,13 @@ import com.atta.app.MainActivity
 import com.atta.app.R
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
+import com.atta.app.data.AttaSettings
 import com.atta.app.widget.AttaWidgetUpdater
 import com.atta.app.widget.OpenLineExtra
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 
 object NotificationHelper {
@@ -39,13 +41,13 @@ object NotificationHelper {
             "Daily line",
             NotificationManager.IMPORTANCE_DEFAULT,
         ).apply {
-            description = "One quiet line at the hour you choose."
+            description = "One quiet line at the hours you choose."
         }
         manager.createNotificationChannel(channel)
     }
 
     /** The line itself is the preview — the notification is the product. */
-    fun show(context: Context, title: String, line: String, lineId: String, evening: Boolean) {
+    fun show(context: Context, title: String, line: String, lineId: String, notificationId: Int) {
         if (Build.VERSION.SDK_INT >= 33 &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
@@ -56,7 +58,7 @@ object NotificationHelper {
             .putExtra(OpenLineExtra, lineId)
         val contentIntent = PendingIntent.getActivity(
             context,
-            if (evening) 1 else 0,
+            notificationId,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
@@ -68,7 +70,7 @@ object NotificationHelper {
             .setContentIntent(contentIntent)
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(context).notify(if (evening) 2 else 1, notification)
+        NotificationManagerCompat.from(context).notify(notificationId, notification)
     }
 }
 
@@ -78,62 +80,89 @@ class DailyLineWorker(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val evening = inputData.getBoolean(KEY_EVENING, false)
+        val slot = inputData.getInt(KEY_SLOT, 0)
         val settings = AttaPrefs(applicationContext).snapshot()
-        val affirmation = AffirmationRepository.lineFor(LocalDate.now(), settings.focusIds, evening)
+        val evening = DailyLineScheduler.slotTime(settings, slot).hour >= 18
+        val affirmation =
+            AffirmationRepository.lineForSlot(LocalDate.now(), slot, settings.focusIds, evening)
         val line = affirmation.text(settings.language).replace("\n", " ")
         NotificationHelper.show(
             context = applicationContext,
-            title = if (evening) "Your evening line is ready" else "Your morning line is ready",
+            title = when {
+                slot == 0 -> "Your morning line is ready"
+                evening -> "Your evening line is ready"
+                else -> "A line for you"
+            },
             line = line,
             lineId = affirmation.id,
-            evening = evening,
+            notificationId = 100 + slot,
         )
         runCatching { AttaWidgetUpdater.updateAll(applicationContext) }
-        DailyLineScheduler.scheduleNext(applicationContext, evening)
+        DailyLineScheduler.scheduleNext(applicationContext, slot)
         return Result.success()
     }
 
     companion object {
-        const val KEY_EVENING = "evening"
+        const val KEY_SLOT = "slot"
     }
 }
 
+/**
+ * N reminders a day, evenly spaced inside the user's window — each slot is
+ * its own unique work that notifies and reschedules itself daily.
+ */
 object DailyLineScheduler {
 
-    private const val MORNING_WORK = "atta_daily_morning"
-    private const val EVENING_WORK = "atta_daily_evening"
-    private const val EVENING_HOUR = 21
+    private const val MaxSlots = 10
 
     suspend fun schedule(context: Context) {
         val settings = AttaPrefs(context).snapshot()
-        enqueue(context, MORNING_WORK, settings.morningHour, settings.morningMinute, evening = false)
-        if (settings.eveningLine) {
-            enqueue(context, EVENING_WORK, EVENING_HOUR, 0, evening = true)
-        } else {
-            WorkManager.getInstance(context).cancelUniqueWork(EVENING_WORK)
+        val manager = WorkManager.getInstance(context)
+        // Names from the old two-a-day scheduler.
+        manager.cancelUniqueWork("atta_daily_morning")
+        manager.cancelUniqueWork("atta_daily_evening")
+        val count = settings.remindersPerDay.coerceIn(1, MaxSlots)
+        for (slot in 0 until MaxSlots) {
+            if (slot < count) {
+                enqueue(context, slot, settings)
+            } else {
+                manager.cancelUniqueWork(workName(slot))
+            }
         }
     }
 
-    suspend fun scheduleNext(context: Context, evening: Boolean) {
+    suspend fun scheduleNext(context: Context, slot: Int) {
         val settings = AttaPrefs(context).snapshot()
-        if (evening) {
-            if (settings.eveningLine) enqueue(context, EVENING_WORK, EVENING_HOUR, 0, evening = true)
-        } else {
-            enqueue(context, MORNING_WORK, settings.morningHour, settings.morningMinute, evening = false)
+        if (slot < settings.remindersPerDay.coerceIn(1, MaxSlots)) {
+            enqueue(context, slot, settings)
         }
     }
 
-    private fun enqueue(context: Context, name: String, hour: Int, minute: Int, evening: Boolean) {
+    /** Slot i sits at start + i * span/(count-1); a single slot sits at start. */
+    fun slotTime(settings: AttaSettings, slot: Int): LocalTime {
+        val start = settings.morningHour * 60 + settings.morningMinute
+        val end = settings.windowEndHour * 60 + settings.windowEndMinute
+        val count = settings.remindersPerDay.coerceIn(1, MaxSlots)
+        val span = (end - start).coerceAtLeast(0)
+        val minutes = if (count == 1) start else start + slot * span / (count - 1)
+        return LocalTime.of(
+            (minutes / 60).coerceIn(0, 23),
+            (minutes % 60).coerceIn(0, 59),
+        )
+    }
+
+    private fun workName(slot: Int) = "atta_line_slot_$slot"
+
+    private fun enqueue(context: Context, slot: Int, settings: AttaSettings) {
         val now = LocalDateTime.now()
-        var next = now.toLocalDate().atTime(hour, minute)
+        var next = now.toLocalDate().atTime(slotTime(settings, slot))
         if (!next.isAfter(now)) next = next.plusDays(1)
         val delayMs = Duration.between(now, next).toMillis()
         val request = OneTimeWorkRequestBuilder<DailyLineWorker>()
             .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)
-            .setInputData(workDataOf(DailyLineWorker.KEY_EVENING to evening))
+            .setInputData(workDataOf(DailyLineWorker.KEY_SLOT to slot))
             .build()
         WorkManager.getInstance(context)
-            .enqueueUniqueWork(name, ExistingWorkPolicy.REPLACE, request)
+            .enqueueUniqueWork(workName(slot), ExistingWorkPolicy.REPLACE, request)
     }
 }
