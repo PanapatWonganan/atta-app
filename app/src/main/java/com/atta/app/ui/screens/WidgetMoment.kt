@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.atta.app.analytics.AttaAnalytics
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.WidgetThemes
@@ -95,6 +96,7 @@ fun WidgetMomentScreen(
             PrimaryButton(
                 text = "Add the widget",
                 onClick = {
+                    AttaAnalytics.log(context, AttaAnalytics.WidgetPinned)
                     widgetManager.requestPinAppWidget(
                         ComponentName(context, AttaWidgetReceiver::class.java),
                         null,

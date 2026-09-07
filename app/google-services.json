@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086842200857",
+    "project_id": "atta-ad7c1",
+    "storage_bucket": "atta-ad7c1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086842200857:android:897472028dd6f9a3099b88",
+        "android_client_info": {
+          "package_name": "com.atta.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAO35pH_nBhRaWU4afAG0qpaI4HAo-gII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

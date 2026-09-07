@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.atta.app.ads.AttaAds
+import com.atta.app.analytics.AttaAnalytics
 import com.atta.app.billing.AttaBilling
 import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
@@ -166,7 +167,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         }
         composable("paywall/{source}") { entry ->
             val fromOnboarding = entry.arguments?.getString("source") == "onboarding"
+            LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.PaywallView) }
             fun close(plan: String?) {
+                if (plan != null && plan != Plans.Free) {
+                    AttaAnalytics.log(context, AttaAnalytics.Subscribe, "plan", plan)
+                }
                 scope.launch {
                     plan?.let { prefs.setPlan(it) }
                     if (fromOnboarding) prefs.setOnboardingDone()
@@ -194,6 +199,7 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                 onWatchAd = {
                     (context as? Activity)?.let { activity ->
                         AttaAds.showRewarded(activity) {
+                            AttaAnalytics.log(context, AttaAnalytics.RewardedEarned)
                             scope.launch {
                                 prefs.setPlusPassUntil(
                                     System.currentTimeMillis() + 24L * 60 * 60 * 1000,

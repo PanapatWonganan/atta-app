@@ -50,15 +50,19 @@ fun AboutScreen() {
 
         Section("PRIVACY")
         Body(
-            "ATTA keeps your data on your device. Your saved lines, your own " +
-                "lines, focus choices, check-ins, and settings are stored " +
-                "locally and included in your phone's standard Android backup.\n\n" +
-                "ATTA has no account system, collects no analytics, and sends " +
-                "nothing you write or read to us or to anyone else. The voice " +
-                "that reads your lines is your device's own text-to-speech " +
-                "engine, running on the device.\n\n" +
-                "If you share a line as an image, it is shared only through the " +
-                "app you choose in the share sheet.",
+            "ATTA keeps your words on your device. Your saved lines, your own " +
+                "lines, check-in history, and settings are stored locally and " +
+                "included in your phone's standard Android backup — we never " +
+                "see them.\n\n" +
+                "To improve the app, ATTA collects anonymous usage statistics " +
+                "and crash reports through Google Firebase (for example, that " +
+                "a practice session was started — never what was read or " +
+                "written). Ads on the free tier are served by Google AdMob " +
+                "under its own policies. We do not sell personal data.\n\n" +
+                "The voice that reads your lines is your device's own " +
+                "text-to-speech engine, running on the device. If you share a " +
+                "line as an image, it is shared only through the app you " +
+                "choose in the share sheet.",
         )
 
         Section("TERMS")

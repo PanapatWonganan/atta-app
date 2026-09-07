@@ -16,6 +16,7 @@ import android.media.session.PlaybackState
 import android.os.IBinder
 import com.atta.app.MainActivity
 import com.atta.app.R
+import com.atta.app.analytics.AttaAnalytics
 import com.atta.app.data.Affirmation
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
@@ -168,6 +169,7 @@ class PracticeService : Service() {
                 )
             }
             requestFocus()
+            AttaAnalytics.log(this@PracticeService, AttaAnalytics.PracticeStart)
             runLoop()
         }
     }

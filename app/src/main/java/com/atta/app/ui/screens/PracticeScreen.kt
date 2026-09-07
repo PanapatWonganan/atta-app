@@ -49,6 +49,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.atta.app.analytics.AttaAnalytics
 import com.atta.app.audio.Moods
 import com.atta.app.audio.PracticeQueue
 import com.atta.app.audio.PracticeService
@@ -310,6 +311,7 @@ fun PracticeScreen(
             },
             onPick = { value ->
                 showCheckIn = false
+                AttaAnalytics.log(context, AttaAnalytics.CheckIn, "mood", value)
                 scope.launch {
                     prefs.logMood(todayKey, value)
                     // They just told us they feel calm — the happiest moment

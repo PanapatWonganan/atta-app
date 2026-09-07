@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atta.app.ads.AdBanner
+import com.atta.app.analytics.AttaAnalytics
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
@@ -314,6 +315,7 @@ fun SavedScreen(
     onRequireUpgrade: () -> Unit,
 ) {
     val colors = Atta.colors
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val saved = Affirmations.All.filter { it.id in settings.savedIds }
     val custom = CustomLines.parse(settings.customLines)
@@ -505,6 +507,7 @@ fun SavedScreen(
             onDismiss = { showEditor = false },
             onSave = { text ->
                 showEditor = false
+                AttaAnalytics.log(context, AttaAnalytics.OwnLineAdded)
                 scope.launch {
                     prefs.addCustomLine(CustomLines.encode(CustomLines.newId(), text))
                 }
