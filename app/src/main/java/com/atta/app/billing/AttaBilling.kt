@@ -75,7 +75,8 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
             )
             .build()
         client.queryProductDetailsAsync(params) { result, details ->
-            val product = details.firstOrNull() ?: return@queryProductDetailsAsync
+            // Billing 8: the callback now hands a QueryProductDetailsResult.
+            val product = details.productDetailsList.firstOrNull() ?: return@queryProductDetailsAsync
             if (result.responseCode != BillingClient.BillingResponseCode.OK) return@queryProductDetailsAsync
             val productParams = BillingFlowParams.ProductDetailsParams.newBuilder()
                 .setProductDetails(product)
