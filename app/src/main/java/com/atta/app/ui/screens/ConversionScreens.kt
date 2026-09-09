@@ -324,6 +324,7 @@ private fun ComparisonBar(
 fun ValueRecapScreen(
     focusIds: Set<String>,
     lang: String,
+    yearlyPrice: String? = null,
     onContinue: () -> Unit,
 ) {
     val colors = Atta.colors
@@ -393,7 +394,7 @@ fun ValueRecapScreen(
         PrimaryButton(text = "Try for \$0.00", onClick = onContinue)
         Spacer(Modifier.height(14.dp))
         Text(
-            text = "7 days free, then \$39.99 / year · cancel anytime",
+            text = "7 days free, then ${yearlyPrice ?: "\$39.99"} / year · cancel anytime",
             style = AttaType.caption,
             color = colors.inkAlpha(0.5f),
             textAlign = TextAlign.Center,
@@ -434,7 +435,10 @@ private fun BenefitRow(title: String, body: String) {
  * is the one right moment to ask the system for notification permission.
  */
 @Composable
-fun TrialPromiseScreen(onContinue: () -> Unit) {
+fun TrialPromiseScreen(
+    yearlyPrice: String? = null,
+    onContinue: () -> Unit,
+) {
     val colors = Atta.colors
     val context = LocalContext.current
     val askPermission = rememberLauncherForActivityResult(
@@ -499,7 +503,7 @@ fun TrialPromiseScreen(onContinue: () -> Unit) {
         PrimaryButton(text = "Continue for free", onClick = ::continueTapped)
         Spacer(Modifier.height(14.dp))
         Text(
-            text = "7 days free, then \$39.99 / year · cancel anytime",
+            text = "7 days free, then ${yearlyPrice ?: "\$39.99"} / year · cancel anytime",
             style = AttaType.caption,
             color = colors.inkAlpha(0.5f),
         )

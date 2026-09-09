@@ -31,6 +31,16 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
     val purchasedPlan: StateFlow<String?> get() = _purchasedPlan
     private val _purchasedPlan = MutableStateFlow<String?>(null)
 
+    /**
+     * Live store prices keyed by plan id, in the user's own currency —
+     * what the paywall shows instead of hardcoded dollars. Empty until
+     * Play answers (or forever, on devices without Play).
+     */
+    val prices: StateFlow<Map<String, PlanPrice>> get() = _prices
+    private val _prices = MutableStateFlow<Map<String, PlanPrice>>(emptyMap())
+
+    data class PlanPrice(val formatted: String, val perMonthApprox: String? = null)
+
     private val client = BillingClient.newBuilder(context)
         .setListener(this)
         .enablePendingPurchases(
@@ -48,7 +58,10 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
         client.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 _ready.value = result.responseCode == BillingClient.BillingResponseCode.OK
-                if (_ready.value) refreshPurchases()
+                if (_ready.value) {
+                    refreshPurchases()
+                    refreshPrices()
+                }
             }
 
             override fun onBillingServiceDisconnected() {
@@ -122,6 +135,61 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
         }
     }
 
+    /** One query per product type; results land as formatted local prices. */
+    private fun refreshPrices() {
+        val subs = QueryProductDetailsParams.newBuilder()
+            .setProductList(
+                listOf(WeeklyProduct, YearlyProduct).map { id ->
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId(id)
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build()
+                },
+            )
+            .build()
+        client.queryProductDetailsAsync(subs) { result, details ->
+            if (result.responseCode != BillingClient.BillingResponseCode.OK) return@queryProductDetailsAsync
+            val updates = details.productDetailsList.mapNotNull { product ->
+                // The recurring price is the last pricing phase (free trials
+                // and intro offers come first in the list).
+                val phase = product.subscriptionOfferDetails
+                    ?.firstOrNull()?.pricingPhases?.pricingPhaseList
+                    ?.lastOrNull { it.priceAmountMicros > 0 } ?: return@mapNotNull null
+                val plan = planFor(listOf(product.productId)) ?: return@mapNotNull null
+                val perMonth = if (product.productId == YearlyProduct) {
+                    formatMicros(phase.priceAmountMicros / 12, phase.priceCurrencyCode)
+                } else {
+                    null
+                }
+                plan to PlanPrice(phase.formattedPrice, perMonth)
+            }
+            _prices.value = _prices.value + updates
+        }
+        val inapp = QueryProductDetailsParams.newBuilder()
+            .setProductList(
+                listOf(
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId(LifetimeProduct)
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build(),
+                ),
+            )
+            .build()
+        client.queryProductDetailsAsync(inapp) { result, details ->
+            if (result.responseCode != BillingClient.BillingResponseCode.OK) return@queryProductDetailsAsync
+            details.productDetailsList.firstOrNull()?.oneTimePurchaseOfferDetails?.let { offer ->
+                _prices.value = _prices.value + (Plans.Lifetime to PlanPrice(offer.formattedPrice))
+            }
+        }
+    }
+
+    private fun formatMicros(micros: Long, currencyCode: String): String = runCatching {
+        val format = java.text.NumberFormat.getCurrencyInstance()
+        format.currency = java.util.Currency.getInstance(currencyCode)
+        format.maximumFractionDigits = 2
+        format.format(micros / 1_000_000.0)
+    }.getOrDefault("")
+
     private fun handle(purchase: Purchase) {
         if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) return
         if (!purchase.isAcknowledged) {
@@ -148,8 +216,9 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
     }
 
     companion object {
-        /** TEMPORARY: local plans for testing. Set false for the Play release. */
-        const val LocalTestingMode = true
+        /** Real Play billing. The three products exist and are active in the
+         *  Console; the local-plan fallback still covers devices without Play. */
+        const val LocalTestingMode = false
 
         // Product ids to create in Play Console before release.
         private const val WeeklyProduct = "atta_weekly"

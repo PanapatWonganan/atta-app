@@ -98,6 +98,7 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
 
     val billing = remember { AttaBilling(context.applicationContext) }
     val billingReady by billing.ready.collectAsState()
+    val planPrices by billing.prices.collectAsState()
     val adReady by AttaAds.rewardedReady.collectAsState()
     LaunchedEffect(Unit) {
         billing.connect()
@@ -188,13 +189,19 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         }
         composable("valuerecap") {
             LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.ValueView) }
-            ValueRecapScreen(settings.focusIds, settings.language) {
+            ValueRecapScreen(
+                focusIds = settings.focusIds,
+                lang = settings.language,
+                yearlyPrice = planPrices[Plans.TrialYearly]?.formatted,
+            ) {
                 nav.navigate("trialpromise")
             }
         }
         composable("trialpromise") {
             LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.TrialPromiseView) }
-            TrialPromiseScreen { nav.navigate("paywall/onboarding") }
+            TrialPromiseScreen(yearlyPrice = planPrices[Plans.TrialYearly]?.formatted) {
+                nav.navigate("paywall/onboarding")
+            }
         }
         composable("paywall/{source}") { entry ->
             val fromOnboarding = entry.arguments?.getString("source") == "onboarding"
@@ -226,6 +233,7 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                     }
                 },
                 onRestore = { billing.restore() },
+                prices = planPrices,
                 adReady = adReady && Plans.isFree(settings.plan),
                 onWatchAd = {
                     (context as? Activity)?.let { activity ->

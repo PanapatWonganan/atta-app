@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.atta.app.billing.AttaBilling
 import com.atta.app.data.Plans
 import com.atta.app.ui.components.CheckIcon
 import com.atta.app.ui.components.PrimaryButton
@@ -53,11 +54,22 @@ private data class PlanOption(
     val mostChosen: Boolean = false,
 )
 
-private val PlanOptions = listOf(
-    PlanOption(Plans.TrialWeekly, "Weekly", "7 days free, then \$2.99 / week"),
-    PlanOption(Plans.TrialYearly, "Yearly", "7 days free, then \$39.99 / year · \$3.33 a month", mostChosen = true),
-    PlanOption(Plans.Lifetime, "Lifetime", "\$79.99 once. Yours for good"),
-)
+/** Live store prices when Play has answered; the launch-day copy otherwise. */
+private fun planOptions(prices: Map<String, AttaBilling.PlanPrice>): List<PlanOption> {
+    val weekly = prices[Plans.TrialWeekly]?.formatted ?: "\$2.99"
+    val yearly = prices[Plans.TrialYearly]
+    val yearlyLine = yearly?.let { price ->
+        val perMonth = price.perMonthApprox?.takeIf { it.isNotEmpty() }
+        "7 days free, then ${price.formatted} / year" +
+            (perMonth?.let { " · $it a month" } ?: "")
+    } ?: "7 days free, then \$39.99 / year · \$3.33 a month"
+    val lifetime = prices[Plans.Lifetime]?.formatted ?: "\$79.99"
+    return listOf(
+        PlanOption(Plans.TrialWeekly, "Weekly", "7 days free, then $weekly / week"),
+        PlanOption(Plans.TrialYearly, "Yearly", yearlyLine, mostChosen = true),
+        PlanOption(Plans.Lifetime, "Lifetime", "$lifetime once. Yours for good"),
+    )
+}
 
 /**
  * Closes without pressure: "Not now" is visible from second one, the trial
@@ -71,9 +83,11 @@ fun PaywallScreen(
     onRestore: () -> Unit = {},
     adReady: Boolean = false,
     onWatchAd: () -> Unit = {},
+    prices: Map<String, AttaBilling.PlanPrice> = emptyMap(),
 ) {
     val colors = Atta.colors
     var selected by remember { mutableStateOf(Plans.TrialYearly) }
+    val options = remember(prices) { planOptions(prices) }
 
     Column(
         modifier = Modifier
@@ -131,7 +145,7 @@ fun PaywallScreen(
             TimelineRow("Day 7", "trial ends. Nothing charges before this")
             Spacer(Modifier.height(22.dp))
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                PlanOptions.forEach { plan ->
+                options.forEach { plan ->
                     PlanCard(
                         plan = plan,
                         selected = selected == plan.id,
