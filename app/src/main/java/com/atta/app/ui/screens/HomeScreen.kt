@@ -57,11 +57,17 @@ import androidx.core.content.ContextCompat
 import com.atta.app.ads.AttaAds
 import com.atta.app.ads.NativeAdCard
 import com.atta.app.audio.PracticeQueue
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
+import com.atta.app.analytics.AttaAnalytics
 import com.atta.app.audio.PracticeService
 import com.atta.app.data.Affirmation
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
+import com.atta.app.data.Streak
 import com.atta.app.data.WidgetTheme
 import com.atta.app.data.WidgetThemes
 import com.atta.app.notify.DailyLineScheduler
@@ -174,8 +180,15 @@ fun HomeScreen(
             val (date, affirmation) = feed[feedIndex]
             val line = affirmation.text(settings.language)
             val isNight = (feedIndex == 0 && eveningNow) || affirmation.daypart.name == "NIGHT"
+            // The quiet streak lives inside the eyebrow — a fact, not a nag.
+            val streak = Streak.count(settings.metDays, today)
+            val streakTail = if (feedIndex == 0 && streak >= 2) {
+                " · " + if (settings.language == "th") "$streak เช้าติดกัน" else "$streak mornings"
+            } else {
+                ""
+            }
             val eyebrow = (if (isNight) "Night" else "Morning") +
-                " · " + AffirmationRepository.shortDate(date, settings.language)
+                " · " + AffirmationRepository.shortDate(date, settings.language) + streakTail
             HomeCard(
                 theme = theme,
                 line = line,
@@ -201,8 +214,27 @@ fun HomeScreen(
                 onOpenMenu = { showMenu = true },
                 showChevron = page < pageCount - 1,
                 onOpenPractice = { onOpen("practice/feed/$feedIndex") },
+                // Hold the line to mark the morning met — the daily ritual.
+                onHold = {
+                    if (!Streak.metToday(settings.metDays, today)) {
+                        AttaAnalytics.log(context, AttaAnalytics.MetDay)
+                        scope.launch { prefs.recordMetDay(today.toString()) }
+                    }
+                },
             )
         }
+    }
+
+    // Sunday, first card: the week, shown not scored.
+    val weekSummaryVisible = today.dayOfWeek.value == 7 &&
+        pagerState.currentPage == 0 &&
+        settings.metDays.isNotEmpty()
+    if (weekSummaryVisible) {
+        WeekSummaryPill(
+            settings = settings,
+            today = today,
+            theme = theme,
+        )
     }
 
     if (showMenu) {
@@ -238,6 +270,79 @@ private fun shareLine(context: android.content.Context, theme: WidgetTheme, line
     ShareCard.share(context, theme, line)
 }
 
+/**
+ * Sunday's quiet receipt: seven dots and one sentence. Evidence the week
+ * happened, never a score.
+ */
+@Composable
+private fun WeekSummaryPill(
+    settings: AttaSettings,
+    today: LocalDate,
+    theme: WidgetTheme,
+) {
+    val week = remember(settings.metDays, settings.moodLog) {
+        Streak.week(settings.metDays, settings.moodLog, today)
+    }
+    val met = week.count { it.met }
+    if (met == 0) return
+    val th = settings.language == "th"
+    val topMood = week.mapNotNull { it.mood }
+        .groupingBy { it }
+        .eachCount()
+        .maxByOrNull { it.value }
+        ?.key
+    val moodWord = when (topMood) {
+        "calm" -> if (th) "สงบ" else "calm"
+        "okay" -> if (th) "กลาง ๆ" else "okay"
+        "heavy" -> if (th) "หนัก" else "heavy"
+        else -> null
+    }
+    val label = if (th) {
+        "สัปดาห์นี้: $met เช้า" + (moodWord?.let { " · ส่วนใหญ่$it" } ?: "")
+    } else {
+        val mornings = if (met == 1) "morning" else "mornings"
+        "This week: $met $mornings" + (moodWord?.let { " · mostly $it" } ?: "")
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(top = 64.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(theme.ink.copy(alpha = 0.06f))
+                .padding(horizontal = 14.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            week.forEach { day ->
+                val dot = when {
+                    day.met && day.mood == "calm" -> AttaPalette.Sage
+                    day.met && day.mood == "okay" -> AttaPalette.Champagne
+                    day.met && day.mood == "heavy" -> AttaPalette.Clay
+                    day.met -> theme.ink.copy(alpha = 0.4f)
+                    else -> theme.ink.copy(alpha = 0.14f)
+                }
+                Box(
+                    Modifier
+                        .size(6.dp)
+                        .clip(CircleShape)
+                        .background(dot),
+                )
+            }
+            Spacer(Modifier.width(5.dp))
+            Text(
+                text = label,
+                style = AttaType.caption.copy(fontSize = 11.sp),
+                color = theme.ink.copy(alpha = 0.7f),
+            )
+        }
+    }
+}
+
 /** One full-bleed affirmation card. Shared by the feed and the saved-line viewer. */
 @Composable
 fun HomeCard(
@@ -252,7 +357,9 @@ fun HomeCard(
     showChevron: Boolean,
     onClose: (() -> Unit)? = null,
     onOpenPractice: (() -> Unit)? = null,
+    onHold: (() -> Unit)? = null,
 ) {
+    val haptic = LocalHapticFeedback.current
     val transition = rememberInfiniteTransition(label = "drift")
     val drift by transition.animateFloat(
         initialValue = 0f,
@@ -266,6 +373,14 @@ fun HomeCard(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .pointerInput(onHold) {
+                if (onHold != null) {
+                    detectTapGestures(onLongPress = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onHold()
+                    })
+                }
+            }
             .drawBehind {
                 val (start, end) = theme.gradientPoints(size.width, size.height)
                 val dir = end - start

@@ -31,6 +31,7 @@ import com.atta.app.data.Affirmations
 import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.Plans
+import com.atta.app.notify.TrialNote
 import com.atta.app.ui.screens.AboutScreen
 import com.atta.app.ui.screens.CommitScreen
 import com.atta.app.ui.screens.ComparisonScreen
@@ -107,12 +108,22 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
     }
     DisposableEffect(Unit) { onDispose { billing.release() } }
 
+    // A taken trial starts the day-5 clock (the note the trial-promise
+    // screen commits to). Re-purchasing restarts it.
+    fun onPlanTaken(plan: String) {
+        if (plan != Plans.TrialWeekly && plan != Plans.TrialYearly) return
+        val now = System.currentTimeMillis()
+        scope.launch { prefs.setTrialStart(now) }
+        TrialNote.schedule(context, now)
+    }
+
     // Play purchases land here: persist the plan, then close any open paywall
     // the same way a local subscribe would have.
     LaunchedEffect(Unit) {
         billing.purchasedPlan.collect { plan ->
             if (plan == null) return@collect
             prefs.setPlan(plan)
+            onPlanTaken(plan)
             runCatching { AttaWidgetUpdater.updateAll(context) }
             val entry = nav.currentBackStackEntry
             if (entry?.destination?.route?.startsWith("paywall") == true) {
@@ -209,9 +220,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
             fun close(plan: String?) {
                 if (plan != null && plan != Plans.Free) {
                     AttaAnalytics.log(context, AttaAnalytics.Subscribe, "plan", plan)
+                    onPlanTaken(plan)
                 }
                 scope.launch {
                     plan?.let { prefs.setPlan(it) }
+                    if (plan == null || plan == Plans.Free) prefs.recordPaywallDismiss()
                     if (fromOnboarding) prefs.setOnboardingDone()
                     runCatching { AttaWidgetUpdater.updateAll(context) }
                 }
@@ -234,6 +247,9 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                 },
                 onRestore = { billing.restore() },
                 prices = planPrices,
+                // Second "Not now" onward earns the one quiet weekly downsell.
+                offerDownsell = settings.paywallDismisses >= 1 && Plans.isFree(settings.plan),
+                onDownsellShown = { AttaAnalytics.log(context, AttaAnalytics.DownsellView) },
                 adReady = adReady && Plans.isFree(settings.plan),
                 onWatchAd = {
                     (context as? Activity)?.let { activity ->

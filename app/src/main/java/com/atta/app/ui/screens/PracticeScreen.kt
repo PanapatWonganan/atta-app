@@ -314,6 +314,7 @@ fun PracticeScreen(
                 AttaAnalytics.log(context, AttaAnalytics.CheckIn, "mood", value)
                 scope.launch {
                     prefs.logMood(todayKey, value)
+                    prefs.recordMetDay(todayKey)
                     // They just told us they feel calm — the happiest moment
                     // this app has; ReviewPrompter rate-limits itself.
                     if (value == "calm") {

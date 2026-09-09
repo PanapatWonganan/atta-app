@@ -84,10 +84,24 @@ fun PaywallScreen(
     adReady: Boolean = false,
     onWatchAd: () -> Unit = {},
     prices: Map<String, AttaBilling.PlanPrice> = emptyMap(),
+    offerDownsell: Boolean = false,
+    onDownsellShown: () -> Unit = {},
 ) {
     val colors = Atta.colors
     var selected by remember { mutableStateOf(Plans.TrialYearly) }
+    var showDownsell by remember { mutableStateOf(false) }
+    var downsellSpent by remember { mutableStateOf(false) }
     val options = remember(prices) { planOptions(prices) }
+    // "Not now" gets one soft counter-offer, never a second.
+    fun declined() {
+        if (offerDownsell && !downsellSpent) {
+            downsellSpent = true
+            showDownsell = true
+            onDownsellShown()
+        } else {
+            onNotNow()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -107,7 +121,7 @@ fun PaywallScreen(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = onNotNow,
+                        onClick = ::declined,
                     )
                     .padding(horizontal = 12.dp, vertical = 12.dp),
             ) {
@@ -190,6 +204,68 @@ fun PaywallScreen(
                 )
                 .padding(vertical = 4.dp),
         )
+    }
+
+    if (showDownsell) {
+        DownsellSheet(
+            weeklyPrice = prices[Plans.TrialWeekly]?.formatted ?: "\$2.99",
+            onTake = {
+                showDownsell = false
+                onSubscribe(Plans.TrialWeekly)
+            },
+            onDecline = {
+                showDownsell = false
+                onNotNow()
+            },
+        )
+    }
+}
+
+/** The soft counter-offer: one plan, no pressure, shown once per visit. */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun DownsellSheet(
+    weeklyPrice: String,
+    onTake: () -> Unit,
+    onDecline: () -> Unit,
+) {
+    val colors = Atta.colors
+    androidx.compose.material3.ModalBottomSheet(
+        onDismissRequest = onDecline,
+        containerColor = colors.canvas,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = AttaDimens.Md)
+                .padding(bottom = AttaDimens.Lg),
+        ) {
+            Text(
+                text = "Just the week, then decide.",
+                style = AttaType.displaySm.copy(fontSize = 22.sp, lineHeight = 34.sp),
+                color = colors.ink,
+            )
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = "No yearly promise. 7 days free, then $weeklyPrice a week — cancel in two taps whenever.",
+                style = AttaType.body.copy(fontSize = 14.sp, lineHeight = 23.sp),
+                color = colors.inkAlpha(0.6f),
+            )
+            Spacer(Modifier.height(AttaDimens.Md))
+            PrimaryButton(text = "Try the week", onClick = onTake)
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = "No thanks",
+                style = AttaType.body.copy(fontSize = 14.sp),
+                color = colors.inkAlpha(0.45f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(AttaDimens.RadiusChip))
+                    .clickable(onClick = onDecline)
+                    .padding(vertical = 12.dp),
+            )
+        }
     }
 }
 

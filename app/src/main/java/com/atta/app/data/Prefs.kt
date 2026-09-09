@@ -55,6 +55,9 @@ data class AttaSettings(
     val usageDays: Set<String> = emptySet(), // distinct "yyyy-MM-dd" the app was opened
     val reviewLastAskMs: Long = 0L,
     val reviewAskCount: Int = 0,
+    val metDays: Set<String> = emptySet(), // days the line was actually met (hold, practice, check-in)
+    val trialStartMs: Long = 0L, // when a trial plan was first taken; drives the day-5 note
+    val paywallDismisses: Int = 0, // "Not now" count; the second one earns the weekly downsell
 ) {
     /** Free means no paid plan AND no live ad-earned day pass. */
     val freeTier: Boolean
@@ -83,6 +86,9 @@ private object Keys {
     val RemindersPerDay = intPreferencesKey("reminders_per_day")
     val WindowEndHour = intPreferencesKey("window_end_hour")
     val WindowEndMinute = intPreferencesKey("window_end_minute")
+    val MetDays = stringSetPreferencesKey("met_days")
+    val TrialStartMs = longPreferencesKey("trial_start_ms")
+    val PaywallDismisses = intPreferencesKey("paywall_dismisses")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -107,6 +113,9 @@ private fun Preferences.toSettings() = AttaSettings(
     usageDays = this[Keys.UsageDays] ?: emptySet(),
     reviewLastAskMs = this[Keys.ReviewLastAsk] ?: 0L,
     reviewAskCount = this[Keys.ReviewAskCount] ?: 0,
+    metDays = this[Keys.MetDays] ?: emptySet(),
+    trialStartMs = this[Keys.TrialStartMs] ?: 0L,
+    paywallDismisses = this[Keys.PaywallDismisses] ?: 0,
 )
 
 class AttaPrefs(private val context: Context) {
@@ -187,5 +196,19 @@ class AttaPrefs(private val context: Context) {
     suspend fun logMood(date: String, value: String) = context.attaDataStore.edit {
         it[Keys.MoodLog] = (it[Keys.MoodLog] ?: emptySet())
             .filterNot { entry -> entry.substringBefore('|') == date }.toSet() + "$date|$value"
+    }
+
+    /** The day counts as met once; keeps the most recent 60 like usageDays. */
+    suspend fun recordMetDay(date: String) = context.attaDataStore.edit {
+        val days = (it[Keys.MetDays] ?: emptySet()) + date
+        it[Keys.MetDays] = days.sortedDescending().take(60).toSet()
+    }
+
+    /** Stamped once per trial: re-purchasing restarts the day-5 clock. */
+    suspend fun setTrialStart(epochMs: Long) =
+        context.attaDataStore.edit { it[Keys.TrialStartMs] = epochMs }
+
+    suspend fun recordPaywallDismiss() = context.attaDataStore.edit {
+        it[Keys.PaywallDismisses] = (it[Keys.PaywallDismisses] ?: 0) + 1
     }
 }

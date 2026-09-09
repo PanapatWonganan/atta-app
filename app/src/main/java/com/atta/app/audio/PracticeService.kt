@@ -170,6 +170,8 @@ class PracticeService : Service() {
             }
             requestFocus()
             AttaAnalytics.log(this@PracticeService, AttaAnalytics.PracticeStart)
+            // Practicing counts as meeting the day's line.
+            AttaPrefs(this@PracticeService).recordMetDay(java.time.LocalDate.now().toString())
             runLoop()
         }
     }

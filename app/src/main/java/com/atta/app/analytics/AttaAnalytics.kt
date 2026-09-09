@@ -23,6 +23,8 @@ object AttaAnalytics {
     const val WidgetPinned = "widget_pinned"
     const val OwnLineAdded = "own_line_added"
     const val CheckIn = "check_in"
+    const val MetDay = "met_day"
+    const val DownsellView = "downsell_view"
 
     fun log(context: Context, event: String, key: String? = null, value: String? = null) {
         runCatching {
