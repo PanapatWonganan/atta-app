@@ -43,6 +43,7 @@ import com.atta.app.ui.screens.ResultScreen
 import com.atta.app.ui.screens.SavedScreen
 import com.atta.app.ui.screens.SettingsScreen
 import com.atta.app.ui.screens.TrialPromiseScreen
+import com.atta.app.ui.screens.ValueRecapScreen
 import com.atta.app.ui.screens.ViewerScreen
 import com.atta.app.ui.screens.WelcomeScreen
 import com.atta.app.ui.screens.WidgetGalleryScreen
@@ -171,7 +172,11 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         // visible, then the payment fear removed.
         composable("compare") {
             LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.CompareView) }
-            ComparisonScreen { nav.navigate("trialpromise") }
+            ComparisonScreen { nav.navigate("valuerecap") }
+        }
+        composable("valuerecap") {
+            LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.ValueView) }
+            ValueRecapScreen { nav.navigate("trialpromise") }
         }
         composable("trialpromise") {
             LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.TrialPromiseView) }

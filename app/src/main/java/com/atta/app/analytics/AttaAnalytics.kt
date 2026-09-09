@@ -13,6 +13,7 @@ object AttaAnalytics {
 
     const val PaywallView = "paywall_view"
     const val CompareView = "compare_view"
+    const val ValueView = "value_view"
     const val TrialPromiseView = "trial_promise_view"
     const val Subscribe = "subscribe"
     const val RewardedEarned = "rewarded_earned"

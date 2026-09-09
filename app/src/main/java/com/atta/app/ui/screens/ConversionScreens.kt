@@ -169,6 +169,100 @@ private fun ComparisonBar(
     }
 }
 
+/** Benefit recap right before the reminder promise: the ask, made plain. */
+@Composable
+fun ValueRecapScreen(onContinue: () -> Unit) {
+    val colors = Atta.colors
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.canvas)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Sm),
+    ) {
+        Spacer(Modifier.height(AttaDimens.Xl))
+        Text(
+            text = "We'd like you to\ntry ATTA for free.",
+            style = AttaType.displaySm.copy(fontSize = 26.sp, lineHeight = 42.sp),
+            color = colors.ink,
+        )
+        Spacer(Modifier.height(AttaDimens.Lg))
+        Column(verticalArrangement = Arrangement.spacedBy(AttaDimens.Md)) {
+            BenefitRow(
+                title = "A line that finds you",
+                body = "On your home screen and at the hours you chose — no opening the app required.",
+            )
+            BenefitRow(
+                title = "Spoken, not just read",
+                body = "Each line read aloud over rain or waves, with a timer for falling asleep to.",
+            )
+            BenefitRow(
+                title = "Written for your week",
+                body = "Your three focus areas shape every line. Real Thai and real English.",
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                Modifier
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .background(AttaPalette.Champagne),
+                contentAlignment = Alignment.Center,
+            ) {
+                CheckMark(color = colors.canvas, modifier = Modifier.size(9.dp))
+            }
+            Spacer(Modifier.width(10.dp))
+            Text(
+                text = "No payment due now",
+                style = AttaType.label.copy(fontSize = 14.sp, letterSpacing = 0.2.sp),
+                color = colors.ink,
+            )
+        }
+        Spacer(Modifier.height(AttaDimens.Sm))
+        PrimaryButton(text = "Try for \$0.00", onClick = onContinue)
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = "7 days free, then \$39.99 / year · cancel anytime",
+            style = AttaType.caption,
+            color = colors.inkAlpha(0.5f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+private fun BenefitRow(title: String, body: String) {
+    val colors = Atta.colors
+    Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+        CheckMark(
+            color = AttaPalette.ChampagneDeep,
+            modifier = Modifier
+                .padding(top = 6.dp)
+                .size(13.dp),
+        )
+        Column {
+            Text(
+                text = title,
+                style = AttaType.title.copy(fontSize = 17.sp, lineHeight = 26.sp),
+                color = colors.ink,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = body,
+                style = AttaType.body.copy(fontSize = 13.5.sp, lineHeight = 22.sp),
+                color = colors.inkAlpha(0.55f),
+            )
+        }
+    }
+}
+
 /** The reminder promise before any price talk removes the sign-up fear. */
 @Composable
 fun TrialPromiseScreen(onContinue: () -> Unit) {
