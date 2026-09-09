@@ -32,6 +32,7 @@ import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.Plans
 import com.atta.app.ui.screens.AboutScreen
+import com.atta.app.ui.screens.ComparisonScreen
 import com.atta.app.ui.screens.FocusScreen
 import com.atta.app.ui.screens.HomeScreen
 import com.atta.app.ui.screens.PaywallScreen
@@ -41,6 +42,7 @@ import com.atta.app.ui.screens.QuestionsScreen
 import com.atta.app.ui.screens.ResultScreen
 import com.atta.app.ui.screens.SavedScreen
 import com.atta.app.ui.screens.SettingsScreen
+import com.atta.app.ui.screens.TrialPromiseScreen
 import com.atta.app.ui.screens.ViewerScreen
 import com.atta.app.ui.screens.WelcomeScreen
 import com.atta.app.ui.screens.WidgetGalleryScreen
@@ -162,8 +164,18 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         }
         composable("result") {
             ResultScreen(settings.focusIds, settings.language) {
-                nav.navigate("paywall/onboarding")
+                nav.navigate("compare")
             }
+        }
+        // Two beats between the result and the price: the difference made
+        // visible, then the payment fear removed.
+        composable("compare") {
+            LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.CompareView) }
+            ComparisonScreen { nav.navigate("trialpromise") }
+        }
+        composable("trialpromise") {
+            LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.TrialPromiseView) }
+            TrialPromiseScreen { nav.navigate("paywall/onboarding") }
         }
         composable("paywall/{source}") { entry ->
             val fromOnboarding = entry.arguments?.getString("source") == "onboarding"
