@@ -32,7 +32,9 @@ import com.atta.app.data.AttaPrefs
 import com.atta.app.data.AttaSettings
 import com.atta.app.data.Plans
 import com.atta.app.ui.screens.AboutScreen
+import com.atta.app.ui.screens.CommitScreen
 import com.atta.app.ui.screens.ComparisonScreen
+import com.atta.app.ui.screens.FirstLineScreen
 import com.atta.app.ui.screens.FocusScreen
 import com.atta.app.ui.screens.HomeScreen
 import com.atta.app.ui.screens.PaywallScreen
@@ -165,18 +167,30 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
         }
         composable("result") {
             ResultScreen(settings.focusIds, settings.language) {
-                nav.navigate("compare")
+                nav.navigate("firstline")
             }
         }
-        // Two beats between the result and the price: the difference made
-        // visible, then the payment fear removed.
+        // The pre-paywall run: product felt (first line, spoken), a promise
+        // made, the difference shown, the ask made plain, the fear removed.
+        composable("firstline") {
+            LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.FirstLineView) }
+            FirstLineScreen(settings.themeId, settings.focusIds, settings.language) {
+                nav.navigate("commit")
+            }
+        }
+        composable("commit") {
+            LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.CommitView) }
+            CommitScreen { nav.navigate("compare") }
+        }
         composable("compare") {
             LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.CompareView) }
             ComparisonScreen { nav.navigate("valuerecap") }
         }
         composable("valuerecap") {
             LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.ValueView) }
-            ValueRecapScreen { nav.navigate("trialpromise") }
+            ValueRecapScreen(settings.focusIds, settings.language) {
+                nav.navigate("trialpromise")
+            }
         }
         composable("trialpromise") {
             LaunchedEffect(Unit) { AttaAnalytics.log(context, AttaAnalytics.TrialPromiseView) }

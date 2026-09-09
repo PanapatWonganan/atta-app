@@ -1,7 +1,13 @@
 package com.atta.app.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,15 +38,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.atta.app.audio.PracticeVoice
+import com.atta.app.data.AffirmationRepository
+import com.atta.app.data.Categories
+import com.atta.app.data.WidgetThemes
 import com.atta.app.ui.components.Eyebrow
 import com.atta.app.ui.components.PrimaryButton
+import java.time.LocalDate
 import com.atta.app.ui.theme.Atta
 import com.atta.app.ui.theme.AttaDimens
 import com.atta.app.ui.theme.AttaMotion
@@ -51,6 +66,141 @@ import com.atta.app.ui.theme.AttaType
  * star emoji — the same two conversion beats (difference made visible,
  * then payment anxiety removed) spoken quietly.
  */
+
+/**
+ * The aha moment, before any selling: the user's real first line on their
+ * derived theme, read aloud once — the product experienced, not described.
+ */
+@Composable
+fun FirstLineScreen(
+    themeId: String,
+    focusIds: Set<String>,
+    lang: String,
+    onContinue: () -> Unit,
+) {
+    val context = LocalContext.current
+    val theme = WidgetThemes.byId(themeId)
+    val line = remember(focusIds) { AffirmationRepository.lineFor(LocalDate.now(), focusIds) }
+    var voiceReady by remember { mutableStateOf(false) }
+    var voice by remember { mutableStateOf<PracticeVoice?>(null) }
+
+    // One spoken line. The voice dies with the screen; Practice owns the rest.
+    DisposableEffect(Unit) {
+        val v = PracticeVoice(context, lang) { state ->
+            if (state == PracticeVoice.State.Ready) voiceReady = true
+        }
+        voice = v
+        onDispose { v.shutdown() }
+    }
+    LaunchedEffect(voiceReady) {
+        if (voiceReady) {
+            kotlinx.coroutines.delay(700)
+            voice?.speak(line.text(lang).replace("\n", " "), slow = true)
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .drawBehind { drawRect(brush = theme.brush(size.width, size.height)) }
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Sm),
+    ) {
+        Spacer(Modifier.height(AttaDimens.Xl))
+        Text(
+            text = "YOUR FIRST LINE",
+            style = AttaType.eyebrow,
+            color = theme.eyebrowColor(),
+        )
+        Spacer(Modifier.weight(1f))
+        Text(
+            text = line.text(lang),
+            style = AttaType.display.copy(fontSize = 30.sp, lineHeight = 50.sp),
+            color = theme.ink,
+            modifier = Modifier.widthIn(max = 320.dp),
+        )
+        Spacer(Modifier.height(18.dp))
+        Box(
+            Modifier
+                .width(26.dp)
+                .height(1.dp)
+                .background(theme.ruleColor()),
+        )
+        Spacer(Modifier.weight(1.2f))
+        Text(
+            text = "Read aloud — the way you'll hear it each morning.",
+            style = AttaType.caption.copy(fontSize = 12.sp),
+            color = theme.dateColor(),
+        )
+        Spacer(Modifier.height(AttaDimens.Sm))
+        ThemeButton(theme = theme, text = "Keep it coming", onClick = onContinue)
+    }
+}
+
+/** Ink slab recolored for a gradient surface: readable on all eight themes. */
+@Composable
+private fun ThemeButton(
+    theme: com.atta.app.data.WidgetTheme,
+    text: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp)
+            .clip(RoundedCornerShape(AttaDimens.RadiusButton))
+            .background(theme.ink)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            style = AttaType.label.copy(fontSize = 15.sp, letterSpacing = 0.4.sp),
+            color = if (theme.lightInk) Color(0xFF1C1917) else Color(0xFFF2EDE6),
+        )
+    }
+}
+
+/** One promise, one button. Saying it makes keeping it likelier. */
+@Composable
+fun CommitScreen(onCommit: () -> Unit) {
+    val colors = Atta.colors
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.canvas)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Sm),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(Modifier.weight(1f))
+        Eyebrow(text = "A small promise", color = AttaPalette.ChampagneDeep)
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = "One minute a day.\nThat's all this asks.",
+            style = AttaType.displaySm.copy(fontSize = 26.sp, lineHeight = 42.sp),
+            color = colors.ink,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = "Meet your line each morning.\nRead it once — out loud, or just to yourself.",
+            style = AttaType.body.copy(fontSize = 14.sp, lineHeight = 24.sp),
+            color = colors.inkAlpha(0.6f),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.weight(1.2f))
+        PrimaryButton(text = "I will", onClick = onCommit)
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = "That's the whole commitment",
+            style = AttaType.caption,
+            color = colors.inkAlpha(0.5f),
+        )
+    }
+}
 
 /** Bars grow on entry; the claim stays modest enough to be true. */
 @Composable
@@ -171,8 +321,15 @@ private fun ComparisonBar(
 
 /** Benefit recap right before the reminder promise: the ask, made plain. */
 @Composable
-fun ValueRecapScreen(onContinue: () -> Unit) {
+fun ValueRecapScreen(
+    focusIds: Set<String>,
+    lang: String,
+    onContinue: () -> Unit,
+) {
     val colors = Atta.colors
+    // Their own picks, folded back into the ask — the quiz was for this.
+    val focusLine = focusIds.mapNotNull { Categories.byId(it)?.name(lang) }
+        .joinToString(", ") { it.replaceFirstChar(Char::lowercase) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -187,6 +344,14 @@ fun ValueRecapScreen(onContinue: () -> Unit) {
             style = AttaType.displaySm.copy(fontSize = 26.sp, lineHeight = 42.sp),
             color = colors.ink,
         )
+        if (focusLine.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = "Shaped around $focusLine — your picks.",
+                style = AttaType.body.copy(fontSize = 14.sp, lineHeight = 24.sp),
+                color = AttaPalette.ChampagneDeep,
+            )
+        }
         Spacer(Modifier.height(AttaDimens.Lg))
         Column(verticalArrangement = Arrangement.spacedBy(AttaDimens.Md)) {
             BenefitRow(
@@ -263,10 +428,28 @@ private fun BenefitRow(title: String, body: String) {
     }
 }
 
-/** The reminder promise before any price talk removes the sign-up fear. */
+/**
+ * The reminder promise before any price talk removes the sign-up fear —
+ * and because this screen has just explained why the reminder matters, it
+ * is the one right moment to ask the system for notification permission.
+ */
 @Composable
 fun TrialPromiseScreen(onContinue: () -> Unit) {
     val colors = Atta.colors
+    val context = LocalContext.current
+    val askPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { onContinue() } // Granted or not, the flow moves on.
+    fun continueTapped() {
+        val needsAsk = Build.VERSION.SDK_INT >= 33 &&
+            context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        if (needsAsk) {
+            askPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            onContinue()
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -313,7 +496,7 @@ fun TrialPromiseScreen(onContinue: () -> Unit) {
             )
         }
         Spacer(Modifier.height(AttaDimens.Sm))
-        PrimaryButton(text = "Continue for free", onClick = onContinue)
+        PrimaryButton(text = "Continue for free", onClick = ::continueTapped)
         Spacer(Modifier.height(14.dp))
         Text(
             text = "7 days free, then \$39.99 / year · cancel anytime",

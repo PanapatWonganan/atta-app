@@ -12,6 +12,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 object AttaAnalytics {
 
     const val PaywallView = "paywall_view"
+    const val FirstLineView = "first_line_view"
+    const val CommitView = "commit_view"
     const val CompareView = "compare_view"
     const val ValueView = "value_view"
     const val TrialPromiseView = "trial_promise_view"
