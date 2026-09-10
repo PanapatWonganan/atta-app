@@ -14,8 +14,8 @@ android {
         applicationId = "com.atta.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.1.1"
     }
 
     buildTypes {
@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.fragment)
     implementation(libs.billing.ktx)
     implementation(libs.play.services.ads)
     implementation(libs.user.messaging.platform)
