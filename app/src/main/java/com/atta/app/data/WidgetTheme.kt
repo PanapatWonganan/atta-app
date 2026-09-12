@@ -21,6 +21,7 @@ data class WidgetTheme(
     val lightInk: Boolean, // true when ink is light (dark theme surface)
     val ruleChampagne: Boolean, // Linen and Onyx carry the champagne rule
     val hairline: Boolean, // Onyx: 1dp edge at 7% light ink — shadows vanish on black
+    val sceneId: String? = null, // "sea" | "rain" | "stars": a drawn moving scene in the app; the widget keeps the gradient
 ) {
     /** Gradient endpoints for a w×h surface, matching CSS linear-gradient geometry. */
     fun gradientPoints(w: Float, h: Float): Pair<Offset, Offset> {
@@ -128,7 +129,34 @@ object WidgetThemes {
         lightInk = false, ruleChampagne = false, hairline = false,
     )
 
-    val All = listOf(Dawn, Mist, Linen, Dusk, Onyx, SageField, Clay, DeepWater, Rosewood, Midnight, Honey)
+    // Scene themes: the app draws a slow moving scene (waves, rain, stars)
+    // behind the line; previews and the widget fall back to the gradient.
+
+    val Sea = WidgetTheme(
+        id = "sea", displayName = "Sea",
+        stops = listOf(0f to Color(0xFF2E5A66), 0.5f to Color(0xFF244852), 1f to Color(0xFF16303A)),
+        angleDeg = 170f, ink = Color(0xFFE3EEF0),
+        lightInk = true, ruleChampagne = false, hairline = false, sceneId = "sea",
+    )
+
+    val Rainfall = WidgetTheme(
+        id = "rainfall", displayName = "Rainfall",
+        stops = listOf(0f to Color(0xFF5C707A), 0.5f to Color(0xFF4A5C66), 1f to Color(0xFF37464F)),
+        angleDeg = 168f, ink = Color(0xFFE8EFF2),
+        lightInk = true, ruleChampagne = false, hairline = false, sceneId = "rain",
+    )
+
+    val Starlight = WidgetTheme(
+        id = "starlight", displayName = "Starlight",
+        stops = listOf(0f to Color(0xFF1B2130), 0.55f to Color(0xFF151A28), 1f to Color(0xFF0F131F)),
+        angleDeg = 160f, ink = Color(0xFFE9ECF5),
+        lightInk = true, ruleChampagne = false, hairline = false, sceneId = "stars",
+    )
+
+    val All = listOf(
+        Dawn, Mist, Linen, Dusk, Onyx, SageField, Clay, DeepWater,
+        Rosewood, Midnight, Honey, Sea, Rainfall, Starlight,
+    )
 
     const val DefaultId = "dawn"
 

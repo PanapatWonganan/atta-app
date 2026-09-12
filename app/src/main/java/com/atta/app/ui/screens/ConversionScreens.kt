@@ -53,7 +53,7 @@ import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.Categories
 import com.atta.app.data.WidgetThemes
 import com.atta.app.ui.components.Eyebrow
-import com.atta.app.ui.components.LivingBackdrop
+import com.atta.app.ui.components.ThemeAtmosphere
 import com.atta.app.ui.components.PrimaryButton
 import java.time.LocalDate
 import com.atta.app.ui.theme.Atta
@@ -106,7 +106,7 @@ fun FirstLineScreen(
             .drawBehind { drawRect(brush = theme.brush(size.width, size.height)) },
     ) {
         // The living layer: pools of light breathing under the first line.
-        LivingBackdrop(theme, Modifier.fillMaxSize())
+        ThemeAtmosphere(theme, Modifier.fillMaxSize())
     Column(
         modifier = Modifier
             .fillMaxSize()

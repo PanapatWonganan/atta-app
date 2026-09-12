@@ -31,6 +31,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,7 +81,7 @@ import com.atta.app.ui.components.BookmarkIcon
 import com.atta.app.ui.components.ChevronDownIcon
 import com.atta.app.ui.components.ChevronUpIcon
 import com.atta.app.ui.components.DotsIcon
-import com.atta.app.ui.components.LivingBackdrop
+import com.atta.app.ui.components.ThemeAtmosphere
 import com.atta.app.ui.components.PlayIcon
 import com.atta.app.ui.components.ShareIcon
 import com.atta.app.ui.components.ThemeDot
@@ -401,7 +403,7 @@ fun HomeCard(
             },
     ) {
         // The living layer: pools of light breathing over the gradient.
-        LivingBackdrop(theme, Modifier.fillMaxSize())
+        ThemeAtmosphere(theme, Modifier.fillMaxSize())
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -626,7 +628,11 @@ fun ThemeSheet(
         onDismissRequest = onDismiss,
         containerColor = colors.canvas,
     ) {
-        Column(Modifier.padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Xs)) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Xs),
+        ) {
             Text(
                 text = "Theme",
                 style = AttaType.displaySm.copy(fontSize = 20.sp),
