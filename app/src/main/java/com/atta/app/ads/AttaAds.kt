@@ -36,9 +36,9 @@ import kotlinx.coroutines.flow.StateFlow
  */
 object AttaAds {
 
-    /** TEMPORARY: Google's sample ad units while testing. Set false for the
-     * Play release — real ids clicked in dev builds risk the AdMob account. */
-    const val UseTestIds = true
+    /** Real ad units for the Play release. Flip back to true in dev builds —
+     * real ids clicked during development risk the AdMob account. */
+    const val UseTestIds = false
 
     // Real units (AdMob "Manifest app"). The app id lives in the manifest.
     private const val RealBanner = "ca-app-pub-5439708053812589/7623407900"
