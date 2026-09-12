@@ -79,6 +79,7 @@ import com.atta.app.ui.components.BookmarkIcon
 import com.atta.app.ui.components.ChevronDownIcon
 import com.atta.app.ui.components.ChevronUpIcon
 import com.atta.app.ui.components.DotsIcon
+import com.atta.app.ui.components.LivingBackdrop
 import com.atta.app.ui.components.PlayIcon
 import com.atta.app.ui.components.ShareIcon
 import com.atta.app.ui.components.ThemeDot
@@ -399,6 +400,8 @@ fun HomeCard(
                 )
             },
     ) {
+        // The living layer: pools of light breathing over the gradient.
+        LivingBackdrop(theme, Modifier.fillMaxSize())
         Column(
             modifier = Modifier
                 .fillMaxSize()

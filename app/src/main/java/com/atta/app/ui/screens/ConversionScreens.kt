@@ -53,6 +53,7 @@ import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.Categories
 import com.atta.app.data.WidgetThemes
 import com.atta.app.ui.components.Eyebrow
+import com.atta.app.ui.components.LivingBackdrop
 import com.atta.app.ui.components.PrimaryButton
 import java.time.LocalDate
 import com.atta.app.ui.theme.Atta
@@ -99,10 +100,16 @@ fun FirstLineScreen(
         }
     }
 
+    Box(
+        Modifier
+            .fillMaxSize()
+            .drawBehind { drawRect(brush = theme.brush(size.width, size.height)) },
+    ) {
+        // The living layer: pools of light breathing under the first line.
+        LivingBackdrop(theme, Modifier.fillMaxSize())
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .drawBehind { drawRect(brush = theme.brush(size.width, size.height)) }
             .statusBarsPadding()
             .navigationBarsPadding()
             .padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Sm),
@@ -135,6 +142,7 @@ fun FirstLineScreen(
         )
         Spacer(Modifier.height(AttaDimens.Sm))
         ThemeButton(theme = theme, text = "Keep it coming", onClick = onContinue)
+    }
     }
 }
 

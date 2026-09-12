@@ -58,6 +58,7 @@ import com.atta.app.data.AttaSettings
 import com.atta.app.data.WidgetThemes
 import com.atta.app.review.ReviewPrompter
 import com.atta.app.ui.components.ChevronDownIcon
+import com.atta.app.ui.components.LivingBackdrop
 import com.atta.app.ui.components.ChevronUpIcon
 import com.atta.app.ui.components.PauseIcon
 import com.atta.app.ui.components.PlayIcon
@@ -144,6 +145,8 @@ fun PracticeScreen(
                 )
             },
     ) {
+        // The living layer: pools of light breathing under the practice text.
+        LivingBackdrop(theme, Modifier.fillMaxSize())
         Column(
             modifier = Modifier
                 .fillMaxSize()

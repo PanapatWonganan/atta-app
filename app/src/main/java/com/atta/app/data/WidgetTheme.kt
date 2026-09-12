@@ -107,7 +107,28 @@ object WidgetThemes {
         lightInk = true, ruleChampagne = false, hairline = false,
     )
 
-    val All = listOf(Dawn, Mist, Linen, Dusk, Onyx, SageField, Clay, DeepWater)
+    val Rosewood = WidgetTheme(
+        id = "rosewood", displayName = "Rosewood",
+        stops = listOf(0f to Color(0xFFF2DEDC), 0.52f to Color(0xFFE5C6C4), 1f to Color(0xFFD5ABA9)),
+        angleDeg = 158f, ink = Color(0xFF33211F),
+        lightInk = false, ruleChampagne = false, hairline = false,
+    )
+
+    val Midnight = WidgetTheme(
+        id = "midnight", displayName = "Midnight",
+        stops = listOf(0f to Color(0xFF2A3240), 0.52f to Color(0xFF212837), 1f to Color(0xFF171D2B)),
+        angleDeg = 152f, ink = Color(0xFFE8ECF2),
+        lightInk = true, ruleChampagne = false, hairline = false,
+    )
+
+    val Honey = WidgetTheme(
+        id = "honey", displayName = "Honey",
+        stops = listOf(0f to Color(0xFFF6E8CE), 0.52f to Color(0xFFEFD9AF), 1f to Color(0xFFE4C48F)),
+        angleDeg = 162f, ink = Color(0xFF2E2414),
+        lightInk = false, ruleChampagne = false, hairline = false,
+    )
+
+    val All = listOf(Dawn, Mist, Linen, Dusk, Onyx, SageField, Clay, DeepWater, Rosewood, Midnight, Honey)
 
     const val DefaultId = "dawn"
 
