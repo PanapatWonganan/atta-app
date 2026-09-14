@@ -12,6 +12,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import com.atta.app.ui.components.StreakToastHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -157,6 +162,7 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
     val startDestination = remember {
         if (settings.onboardingDone) "home" else "welcome"
     }
+    Box(Modifier.fillMaxSize()) {
     NavHost(
         navController = nav,
         startDestination = startDestination,
@@ -358,5 +364,15 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                 ViewerScreen(affirmation, settings, prefs) { nav.popBackStack() }
             }
         }
+    }
+    // The streak's applause, above every screen: appears only in the moment
+    // today's line gets met, then leaves on its own.
+    StreakToastHost(
+        settings = settings,
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .statusBarsPadding()
+            .padding(top = 12.dp),
+    )
     }
 }
