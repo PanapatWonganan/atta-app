@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atta.app.ads.AdBanner
+import com.atta.app.ui.components.StreakCard
 import com.atta.app.analytics.AttaAnalytics
 import com.atta.app.data.AffirmationRepository
 import com.atta.app.data.Affirmations
@@ -599,6 +600,8 @@ fun SettingsScreen(
                 style = AttaType.displaySm.copy(fontSize = 24.sp),
                 color = colors.ink,
             )
+            Spacer(Modifier.height(14.dp))
+            StreakCard(settings)
             Spacer(Modifier.height(10.dp))
 
             SectionLabel("Daily lines")
