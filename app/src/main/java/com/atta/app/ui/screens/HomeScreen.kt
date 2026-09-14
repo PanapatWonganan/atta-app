@@ -613,6 +613,7 @@ fun NavSheet(onDismiss: () -> Unit, onOpen: (route: String) -> Unit) {
         Column(Modifier.padding(horizontal = AttaDimens.Md, vertical = AttaDimens.Xs)) {
             listOf(
                 "Widgets" to "gallery",
+                "Wallpapers" to "wallpapers",
                 "Focus" to "focus",
                 "Saved" to "saved",
                 "Settings" to "settings",

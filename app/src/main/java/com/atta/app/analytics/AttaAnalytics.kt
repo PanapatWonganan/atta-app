@@ -26,6 +26,8 @@ object AttaAnalytics {
     const val MetDay = "met_day"
     const val DownsellView = "downsell_view"
     const val WelcomeOfferView = "welcome_offer_view"
+    const val WallpaperView = "wallpaper_view"
+    const val WallpaperSet = "wallpaper_set"
 
     fun log(context: Context, event: String, key: String? = null, value: String? = null) {
         runCatching {

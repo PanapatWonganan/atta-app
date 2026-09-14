@@ -53,6 +53,7 @@ import com.atta.app.ui.screens.SettingsScreen
 import com.atta.app.ui.screens.TrialPromiseScreen
 import com.atta.app.ui.screens.ValueRecapScreen
 import com.atta.app.ui.screens.ViewerScreen
+import com.atta.app.ui.screens.WallpapersScreen
 import com.atta.app.ui.screens.WelcomeScreen
 import com.atta.app.ui.screens.WidgetGalleryScreen
 import com.atta.app.ui.screens.WidgetMomentScreen
@@ -327,6 +328,14 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                     }
                 },
                 onRequireUpgrade = { nav.navigate("paywall/upgrade") },
+            )
+        }
+        composable("wallpapers") {
+            WallpapersScreen(
+                prefs = prefs,
+                settings = settings,
+                onOpenPaywall = { nav.navigate("paywall/upgrade") },
+                onBack = { nav.popBackStack() },
             )
         }
         composable("gallery") {

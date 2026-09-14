@@ -59,6 +59,7 @@ data class AttaSettings(
     val trialStartMs: Long = 0L, // when a trial plan was first taken; drives the day-5 note
     val paywallDismisses: Int = 0, // "Not now" count; the second one earns the weekly downsell
     val welcomeOfferShownMs: Long = 0L, // last time the welcome-back offer sheet appeared
+    val unlockedWallpapers: Set<String> = emptySet(), // theme ids earned via rewarded ads
 ) {
     /** Free means no paid plan AND no live ad-earned day pass. */
     val freeTier: Boolean
@@ -91,6 +92,7 @@ private object Keys {
     val TrialStartMs = longPreferencesKey("trial_start_ms")
     val PaywallDismisses = intPreferencesKey("paywall_dismisses")
     val WelcomeOfferShownMs = longPreferencesKey("welcome_offer_shown_ms")
+    val UnlockedWallpapers = stringSetPreferencesKey("unlocked_wallpapers")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -119,6 +121,7 @@ private fun Preferences.toSettings() = AttaSettings(
     trialStartMs = this[Keys.TrialStartMs] ?: 0L,
     paywallDismisses = this[Keys.PaywallDismisses] ?: 0,
     welcomeOfferShownMs = this[Keys.WelcomeOfferShownMs] ?: 0L,
+    unlockedWallpapers = this[Keys.UnlockedWallpapers] ?: emptySet(),
 )
 
 class AttaPrefs(private val context: Context) {
@@ -217,4 +220,9 @@ class AttaPrefs(private val context: Context) {
 
     suspend fun recordWelcomeOfferShown(nowMs: Long) =
         context.attaDataStore.edit { it[Keys.WelcomeOfferShownMs] = nowMs }
+
+    /** A rewarded ad buys this wallpaper for keeps. */
+    suspend fun addUnlockedWallpaper(themeId: String) = context.attaDataStore.edit {
+        it[Keys.UnlockedWallpapers] = (it[Keys.UnlockedWallpapers] ?: emptySet()) + themeId
+    }
 }
