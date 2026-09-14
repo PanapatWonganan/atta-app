@@ -58,6 +58,7 @@ data class AttaSettings(
     val metDays: Set<String> = emptySet(), // days the line was actually met (hold, practice, check-in)
     val trialStartMs: Long = 0L, // when a trial plan was first taken; drives the day-5 note
     val paywallDismisses: Int = 0, // "Not now" count; the second one earns the weekly downsell
+    val welcomeOfferShownMs: Long = 0L, // last time the welcome-back offer sheet appeared
 ) {
     /** Free means no paid plan AND no live ad-earned day pass. */
     val freeTier: Boolean
@@ -89,6 +90,7 @@ private object Keys {
     val MetDays = stringSetPreferencesKey("met_days")
     val TrialStartMs = longPreferencesKey("trial_start_ms")
     val PaywallDismisses = intPreferencesKey("paywall_dismisses")
+    val WelcomeOfferShownMs = longPreferencesKey("welcome_offer_shown_ms")
 }
 
 private fun Preferences.toSettings() = AttaSettings(
@@ -116,6 +118,7 @@ private fun Preferences.toSettings() = AttaSettings(
     metDays = this[Keys.MetDays] ?: emptySet(),
     trialStartMs = this[Keys.TrialStartMs] ?: 0L,
     paywallDismisses = this[Keys.PaywallDismisses] ?: 0,
+    welcomeOfferShownMs = this[Keys.WelcomeOfferShownMs] ?: 0L,
 )
 
 class AttaPrefs(private val context: Context) {
@@ -211,4 +214,7 @@ class AttaPrefs(private val context: Context) {
     suspend fun recordPaywallDismiss() = context.attaDataStore.edit {
         it[Keys.PaywallDismisses] = (it[Keys.PaywallDismisses] ?: 0) + 1
     }
+
+    suspend fun recordWelcomeOfferShown(nowMs: Long) =
+        context.attaDataStore.edit { it[Keys.WelcomeOfferShownMs] = nowMs }
 }

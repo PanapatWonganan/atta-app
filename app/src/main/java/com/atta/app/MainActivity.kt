@@ -58,6 +58,10 @@ import com.atta.app.widget.AttaWidgetUpdater
 import com.atta.app.widget.OpenLineExtra
 import kotlinx.coroutines.launch
 
+/** The welcome offer waits for a RETURN visit: a decline in this very
+ *  process session never triggers it on the next screen. */
+private var paywallDeclinedThisSession = false
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -224,7 +228,10 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
                 }
                 scope.launch {
                     plan?.let { prefs.setPlan(it) }
-                    if (plan == null || plan == Plans.Free) prefs.recordPaywallDismiss()
+                    if (plan == null || plan == Plans.Free) {
+                        prefs.recordPaywallDismiss()
+                        paywallDeclinedThisSession = true
+                    }
                     if (fromOnboarding) prefs.setOnboardingDone()
                     runCatching { AttaWidgetUpdater.updateAll(context) }
                 }
@@ -272,7 +279,33 @@ fun AttaNavHost(prefs: AttaPrefs, settings: AttaSettings) {
             }
         }
         composable("home") {
-            HomeScreen(prefs, settings) { route -> nav.navigate(route) }
+            val welcome by billing.welcomeOffer.collectAsState()
+            // No Play on this device/build: a sample offer keeps the sheet
+            // testable; real devices only ever see the Console's own prices.
+            val effectiveWelcome = when {
+                paywallDeclinedThisSession -> null
+                welcome != null -> welcome
+                // No Play on this device/build: a sample offer keeps the
+                // sheet testable; devices with Play see Console prices only.
+                !billingReady && Plans.isFree(settings.plan) ->
+                    AttaBilling.WelcomeOffer("\$19.99", "\$39.99", "\$1.67", "")
+                else -> null
+            }
+            HomeScreen(
+                prefs = prefs,
+                settings = settings,
+                welcomeOffer = effectiveWelcome,
+                onTakeWelcome = {
+                    val activity = context as? Activity
+                    if (billingReady && activity != null) {
+                        billing.launchWelcomePurchase(activity)
+                    } else {
+                        AttaAnalytics.log(context, AttaAnalytics.Subscribe, "plan", Plans.TrialYearly)
+                        scope.launch { prefs.setPlan(Plans.TrialYearly) }
+                        onPlanTaken(Plans.TrialYearly)
+                    }
+                },
+            ) { route -> nav.navigate(route) }
         }
         composable("practice/{source}/{index}") { entry ->
             PracticeScreen(

@@ -41,6 +41,23 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
 
     data class PlanPrice(val formatted: String, val perMonthApprox: String? = null)
 
+    /**
+     * The welcome-back deal: a Play offer on the yearly plan whose offer id
+     * contains "welcome" (create it in the Console, e.g. "welcome50" at half
+     * the first year). Null until Play reports one.
+     */
+    val welcomeOffer: StateFlow<WelcomeOffer?> get() = _welcomeOffer
+    private val _welcomeOffer = MutableStateFlow<WelcomeOffer?>(null)
+
+    data class WelcomeOffer(
+        val discounted: String, // first-year price, formatted
+        val original: String?, // the plain recurring price it undercuts
+        val perMonthApprox: String?,
+        val offerToken: String,
+    )
+
+    private var yearlyDetails: com.android.billingclient.api.ProductDetails? = null
+
     private val client = BillingClient.newBuilder(context)
         .setListener(this)
         .enablePendingPurchases(
@@ -149,6 +166,10 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
             .build()
         client.queryProductDetailsAsync(subs) { result, details ->
             if (result.responseCode != BillingClient.BillingResponseCode.OK) return@queryProductDetailsAsync
+            details.productDetailsList.firstOrNull { it.productId == YearlyProduct }?.let { yearly ->
+                yearlyDetails = yearly
+                findWelcomeOffer(yearly)
+            }
             val updates = details.productDetailsList.mapNotNull { product ->
                 // The recurring price is the last pricing phase (free trials
                 // and intro offers come first in the list).
@@ -181,6 +202,42 @@ class AttaBilling(context: Context) : PurchasesUpdatedListener {
                 _prices.value = _prices.value + (Plans.Lifetime to PlanPrice(offer.formattedPrice))
             }
         }
+    }
+
+    /** A yearly offer named welcome* becomes the returning-user deal. */
+    private fun findWelcomeOffer(yearly: com.android.billingclient.api.ProductDetails) {
+        val offers = yearly.subscriptionOfferDetails ?: return
+        val welcome = offers.firstOrNull { it.offerId?.contains("welcome") == true } ?: return
+        val discounted = welcome.pricingPhases.pricingPhaseList
+            .firstOrNull { it.priceAmountMicros > 0 } ?: return
+        // The plain recurring price: the last paid phase of the base offer.
+        val base = offers.firstOrNull { it.offerId == null } ?: welcome
+        val original = base.pricingPhases.pricingPhaseList.lastOrNull { it.priceAmountMicros > 0 }
+        _welcomeOffer.value = WelcomeOffer(
+            discounted = discounted.formattedPrice,
+            original = original?.formattedPrice,
+            perMonthApprox = formatMicros(discounted.priceAmountMicros / 12, discounted.priceCurrencyCode),
+            offerToken = welcome.offerToken,
+        )
+    }
+
+    /** Launches the yearly purchase on the welcome offer's token. */
+    fun launchWelcomePurchase(activity: Activity) {
+        val product = yearlyDetails ?: return
+        val token = _welcomeOffer.value?.offerToken ?: return
+        client.launchBillingFlow(
+            activity,
+            BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(
+                    listOf(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                            .setProductDetails(product)
+                            .setOfferToken(token)
+                            .build(),
+                    ),
+                )
+                .build(),
+        )
     }
 
     private fun formatMicros(micros: Long, currencyCode: String): String = runCatching {

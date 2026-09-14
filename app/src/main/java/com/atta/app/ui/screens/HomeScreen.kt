@@ -106,6 +106,8 @@ private const val AdEvery = 7
 fun HomeScreen(
     prefs: AttaPrefs,
     settings: AttaSettings,
+    welcomeOffer: com.atta.app.billing.AttaBilling.WelcomeOffer? = null,
+    onTakeWelcome: () -> Unit = {},
     onOpen: (route: String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -130,6 +132,21 @@ fun HomeScreen(
     val pagerState = rememberPagerState { pageCount }
     var showMenu by remember { mutableStateOf(false) }
     var showThemes by remember { mutableStateOf(false) }
+
+    // The welcome-back offer: a declined paywall, a return visit, a real
+    // discount — at most once a day, decided once per composition.
+    var showWelcome by remember {
+        mutableStateOf(
+            welcomeOffer != null && settings.freeTier && settings.paywallDismisses >= 1 &&
+                System.currentTimeMillis() - settings.welcomeOfferShownMs > 20L * 60 * 60 * 1000,
+        )
+    }
+    LaunchedEffect(Unit) {
+        if (showWelcome) {
+            AttaAnalytics.log(context, AttaAnalytics.WelcomeOfferView)
+            prefs.recordWelcomeOfferShown(System.currentTimeMillis())
+        }
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -240,6 +257,16 @@ fun HomeScreen(
         )
     }
 
+    if (showWelcome && welcomeOffer != null) {
+        WelcomeOfferSheet(
+            offer = welcomeOffer,
+            onTake = {
+                showWelcome = false
+                onTakeWelcome()
+            },
+            onDismiss = { showWelcome = false },
+        )
+    }
     if (showMenu) {
         NavSheet(
             onDismiss = { showMenu = false },
